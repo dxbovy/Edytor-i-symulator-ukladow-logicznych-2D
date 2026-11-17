@@ -1,7 +1,8 @@
-## Edytor-i-symulator-ukladow-logicznych-2D
+# Edytor i symulator układów logicznych 2D
 
-# Definicje bramek w kodzie powinny wyglądać tak:
+## Definicje bramek w kodzie powinny wyglądać tak:
 
+```javascript
 const GATE_DEFINITIONS = {
   "AND": {
     id: "AND",
@@ -22,11 +23,11 @@ const GATE_DEFINITIONS = {
   }
   // reszta analogicznie dla OR, XOR, SWITCH, LED itp
 };
+```
 
+## Architektura stanu aplikacji
 
-
-# Architektura stanu aplikacji
-
+```javascript
 const projectState = {
   meta: {
     name: "Projekt_1"
@@ -64,10 +65,11 @@ const projectState = {
     }
   }
 };
+```
 
+## Struktura pliku JSON do eksportu i importu
 
-# Struktura pliku JSON do eksportu i importu
-
+```json
 {
   "projectInfo": {
     "name": "bramki",
@@ -108,3 +110,4 @@ const projectState = {
     }
   ]
 }
+```
