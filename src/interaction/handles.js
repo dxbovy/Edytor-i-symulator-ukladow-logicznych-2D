@@ -64,7 +64,13 @@ export function initSelectionHandles() {
   };
 
   rotateBtn.addEventListener("click", () => rotateSelection90());
-  rotateBtn.addEventListener("pointerdown", (e) => e.stopPropagation());
+  rotateBtn.addEventListener("pointerdown", (e) => {
+    if (isViewPan(e)) {
+      e.preventDefault();
+      return;
+    }
+    e.stopPropagation();
+  });
 
   const onScaleDown = (event) => {
     if (isViewPan(event) || event.button !== 0) return;
