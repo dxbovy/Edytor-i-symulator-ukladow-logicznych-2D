@@ -1,0 +1,46 @@
+import { projectState, subscribe } from "../state/projectState.js";
+
+const GRID_MINOR = 20;
+const GRID_MAJOR = 100;
+
+function gridBackgrounds(camera) {
+  const { x, y, zoom } = camera;
+  const minorPx = GRID_MINOR * zoom;
+  const majorPx = GRID_MAJOR * zoom;
+  const posX = -x * zoom;
+  const posY = -y * zoom;
+  const position = `${posX}px ${posY}px`;
+
+  return {
+    backgroundColor: "#f4f5f7",
+    backgroundImage: [
+      "radial-gradient(circle at 0 0, #c4c7ce 1px, transparent 1px)",
+      "radial-gradient(circle at 0 0, #8b919a 1.5px, transparent 1.6px)",
+    ].join(", "),
+    backgroundSize: `${minorPx}px ${minorPx}px, ${majorPx}px ${majorPx}px`,
+    backgroundPosition: `${position}, ${position}`,
+  };
+}
+
+function paintGrid(root) {
+  const styles = gridBackgrounds(projectState.camera);
+  root.style.backgroundColor = styles.backgroundColor;
+  root.style.backgroundImage = styles.backgroundImage;
+  root.style.backgroundSize = styles.backgroundSize;
+  root.style.backgroundPosition = styles.backgroundPosition;
+}
+
+/** @param {HTMLElement} root */
+function attachGrid(root) {
+  const refresh = () => paintGrid(root);
+  refresh();
+  subscribe(refresh);
+  const observer = new ResizeObserver(refresh);
+  observer.observe(root);
+}
+
+export function initGrid() {
+  const root = document.getElementById("canvas-root");
+  if (!root) return;
+  attachGrid(root);
+}
