@@ -1,4 +1,14 @@
-/** Hook for undo/redo and clipboard — later branch. */
+import { initShortcuts } from "../interaction/shortcuts.js";
+
+export {
+  push,
+  undo,
+  redo,
+  canUndo,
+  canRedo,
+  subscribeHistory,
+} from "./history.js";
+
 export function initHistory() {
-  // Reserved for command history stack.
+  initShortcuts();
 }

@@ -2,10 +2,11 @@ import { subscribe } from "../state/projectState.js";
 import { isViewPan } from "../canvas/cameraInput.js";
 import { getSelectedIds, subscribeSelection } from "./selection.js";
 import { selectionWorldBounds, boundsScreenRect } from "./geometry.js";
+import { captureTransforms } from "../history/snapshots.js";
+import { pushTransformCommand, rotateSelection90WithHistory } from "./editCommands.js";
 import {
   beginScaleGesture,
   nudgeSelectionScale,
-  rotateSelection90,
   updateScaleGesture,
 } from "./rotateScale.js";
 
@@ -40,6 +41,8 @@ export function initSelectionHandles() {
 
   let scaleGesture = null;
   let scalePointerId = null;
+  /** @type {Record<string, { x: number, y: number, rotation: number, scale: number }> | null} */
+  let scaleBefore = null;
 
   const layout = () => {
     const ids = getSelectedIds();
@@ -63,7 +66,7 @@ export function initSelectionHandles() {
     scaleHandle.style.top = `${rect.bottom - 5}px`;
   };
 
-  rotateBtn.addEventListener("click", () => rotateSelection90());
+  rotateBtn.addEventListener("click", () => rotateSelection90WithHistory());
   rotateBtn.addEventListener("pointerdown", (e) => {
     if (isViewPan(e)) {
       e.preventDefault();
@@ -78,6 +81,7 @@ export function initSelectionHandles() {
     event.preventDefault();
     scaleGesture = beginScaleGesture(event.clientX, event.clientY);
     if (!scaleGesture) return;
+    scaleBefore = captureTransforms(getSelectedIds());
     scalePointerId = event.pointerId;
     scaleHandle.setPointerCapture(event.pointerId);
   };
@@ -91,6 +95,27 @@ export function initSelectionHandles() {
 
   const onScaleEnd = (event) => {
     if (scalePointerId === null || event.pointerId !== scalePointerId) return;
+    const ids = getSelectedIds();
+    if (scaleBefore && ids.length) {
+      const after = captureTransforms(ids);
+      let changed = false;
+      for (const id of ids) {
+        const a = scaleBefore[id];
+        const b = after[id];
+        if (!a || !b) continue;
+        if (
+          a.x !== b.x ||
+          a.y !== b.y ||
+          a.rotation !== b.rotation ||
+          a.scale !== b.scale
+        ) {
+          changed = true;
+          break;
+        }
+      }
+      if (changed) pushTransformCommand(scaleBefore, after, ids);
+    }
+    scaleBefore = null;
     scaleGesture = null;
     scalePointerId = null;
     if (scaleHandle.hasPointerCapture(event.pointerId)) {

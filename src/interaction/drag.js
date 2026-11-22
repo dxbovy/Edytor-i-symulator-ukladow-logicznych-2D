@@ -1,6 +1,8 @@
 import { projectState, notify } from "../state/projectState.js";
 import { snapToGrid } from "../canvas/snap.js";
+import { captureTransforms } from "../history/snapshots.js";
 import { getSelectedIds, selectOnly } from "./selection.js";
+import { pushTransformCommand } from "./editCommands.js";
 
 export const CLICK_PX = 4;
 
@@ -51,8 +53,31 @@ export function restoreDragStarts(starts) {
 }
 
 export function finishDragGesture(screenSpan, hitId, starts) {
-  if (screenSpan >= CLICK_PX) snapSelectedToGrid();
-  else {
+  if (screenSpan >= CLICK_PX && starts) {
+    const ids = Object.keys(starts);
+    /** @type {Record<string, { x: number, y: number, rotation: number, scale: number }>} */
+    const before = {};
+    for (const id of ids) {
+      const node = projectState.nodes[id];
+      if (!node) continue;
+      before[id] = {
+        x: starts[id].x,
+        y: starts[id].y,
+        rotation: node.rotation,
+        scale: node.scale,
+      };
+    }
+    snapSelectedToGrid();
+    let moved = false;
+    for (const id of ids) {
+      const node = projectState.nodes[id];
+      if (!node || !before[id]) continue;
+      if (node.x !== before[id].x || node.y !== before[id].y) moved = true;
+    }
+    if (moved) {
+      pushTransformCommand(before, captureTransforms(ids), getSelectedIds());
+    }
+  } else {
     if (starts) restoreDragStarts(starts);
     if (hitId) selectOnly(hitId);
   }

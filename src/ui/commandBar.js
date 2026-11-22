@@ -1,6 +1,5 @@
 import { fitToNodes, zoomBy } from "../canvas/camera.js";
-import { rotateSelection90 } from "../interaction/rotateScale.js";
-import { getSelectionCount, subscribeSelection } from "../interaction/selection.js";
+import { mountEditToolbar } from "./editToolbar.js";
 
 const LATER = "Funkcja dostępna w kolejnym kroku rozwoju.";
 
@@ -70,29 +69,6 @@ export function mountCommandBar(container) {
     })
   );
 
-  const editGroup = document.createElement("div");
-  editGroup.className = "ml-2 flex gap-1";
-  editGroup.setAttribute("role", "group");
-  editGroup.setAttribute("aria-label", "Edycja");
-  const rotateBtn = document.createElement("button");
-  rotateBtn.type = "button";
-  rotateBtn.id = "rotate-90-btn";
-  rotateBtn.textContent = "Obrót 90°";
-  rotateBtn.setAttribute("aria-label", "Obróć zaznaczenie o 90 stopni");
-  rotateBtn.className = BTN_CLASS;
-  rotateBtn.addEventListener("click", () => rotateSelection90());
-  const syncRotate = () => {
-    const n = getSelectionCount();
-    rotateBtn.disabled = n === 0;
-    rotateBtn.title =
-      n === 0
-        ? "Zaznacz obiekt, aby obrócić"
-        : "Obróć zaznaczenie o 90 stopni";
-  };
-  syncRotate();
-  subscribeSelection(syncRotate);
-  editGroup.append(rotateBtn);
-
   const themeGroup = document.createElement("div");
   themeGroup.className = "ml-auto flex gap-1";
   themeGroup.setAttribute("role", "group");
@@ -112,6 +88,6 @@ export function mountCommandBar(container) {
     disabledBtn("EN", "Język angielski")
   );
 
-  bar.append(brand, viewGroup, editGroup, themeGroup, langGroup);
+  bar.append(brand, viewGroup, mountEditToolbar(), themeGroup, langGroup);
   container.appendChild(bar);
 }
