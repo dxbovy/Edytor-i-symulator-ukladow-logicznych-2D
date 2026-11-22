@@ -1,6 +1,6 @@
-/** Hook for canvas rendering (pan/zoom, grid, nodes) — later branch. */
+import { attachPointerReadout } from "./coordinates.js";
+import { setWorldReadout } from "../ui/canvasShell.js";
+
 export function initCanvas() {
-  const world = document.getElementById("world");
-  if (!world) return;
-  // Reserved for world transforms and gate drawing.
+  attachPointerReadout(setWorldReadout);
 }

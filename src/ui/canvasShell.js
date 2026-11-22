@@ -29,12 +29,40 @@ export function mountCanvasShell(container, statusMount) {
   status.setAttribute("aria-live", "polite");
   status.setAttribute("role", "status");
 
+  let worldRx = null;
+  let worldRy = null;
+
   function updateStatus() {
     const zoom = formatZoom(projectState.camera.zoom);
-    status.textContent = `Powiększenie: ${zoom} · Zaznaczenie: 0`;
+    let line = `Powiększenie: ${zoom} · Zaznaczenie: 0`;
+    if (worldRx !== null && worldRy !== null) {
+      line += ` · Świat: ${worldRx}, ${worldRy}`;
+    }
+    if (status.textContent !== line) status.textContent = line;
+  }
+
+  /** @param {number} rx @param {number} ry */
+  function setWorldReadout(rx, ry) {
+    if (rx === worldRx && ry === worldRy) return;
+    worldRx = rx;
+    worldRy = ry;
+    updateStatus();
   }
 
   updateStatus();
   subscribe(updateStatus);
   statusMount.appendChild(status);
+
+  registerStatusWorldReadout(setWorldReadout);
+}
+
+let shellWorldReadout = null;
+
+/** @param {number} rx @param {number} ry */
+export function setWorldReadout(rx, ry) {
+  shellWorldReadout?.(rx, ry);
+}
+
+export function registerStatusWorldReadout(fn) {
+  shellWorldReadout = fn;
 }
