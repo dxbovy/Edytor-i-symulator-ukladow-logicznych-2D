@@ -5,6 +5,7 @@ import {
   subscribeSelection,
   toggle,
 } from "../interaction/selection.js";
+import { registerLocaleRefresh, t } from "../i18n/i18n.js";
 
 function nodeLabel(id, node) {
   return `${node.type} · ${id}`;
@@ -30,7 +31,7 @@ function renderList(ul, filter) {
     btn.type = "button";
     btn.className = rowClass(isSelected(id));
     btn.textContent = nodeLabel(id, node);
-    btn.setAttribute("aria-label", `Obiekt: ${nodeLabel(id, node)}`);
+    btn.setAttribute("aria-label", t("objectAria", { label: nodeLabel(id, node) }));
     btn.setAttribute("aria-selected", isSelected(id) ? "true" : "false");
     btn.addEventListener("click", (event) => {
       if (event.shiftKey) toggle(id);
@@ -43,7 +44,7 @@ function renderList(ul, filter) {
   if (entries.length === 0) {
     const li = document.createElement("li");
     li.className = "ui-muted px-2 py-2 text-xs";
-    li.textContent = "Brak pasujących obiektów.";
+    li.textContent = t("emptyList");
     ul.appendChild(li);
   }
 }
@@ -51,7 +52,7 @@ function renderList(ul, filter) {
 export function mountBrowserPanel(container) {
   const aside = document.createElement("aside");
   aside.className = "ui-panel flex w-60 shrink-0 flex-col border-r";
-  aside.setAttribute("aria-label", "Przeglądarka obiektów");
+  aside.setAttribute("data-i18n-aria", "browserPanel");
 
   const head = document.createElement("div");
   head.className = "border-b border-[var(--line)] px-3 py-2";
@@ -59,7 +60,7 @@ export function mountBrowserPanel(container) {
   title.className = "text-xs font-semibold";
   function updateTitle() {
     const n = Object.keys(projectState.nodes).length;
-    title.textContent = `Obiekty (${n})`;
+    title.textContent = t("objectsTitle", { n });
   }
   updateTitle();
   head.appendChild(title);
@@ -69,8 +70,8 @@ export function mountBrowserPanel(container) {
   const filter = document.createElement("input");
   filter.type = "search";
   filter.className = "ui-field w-full rounded px-2 py-1 text-xs";
-  filter.placeholder = "Filtruj po nazwie lub typie";
-  filter.setAttribute("aria-label", "Filtruj listę obiektów");
+  filter.setAttribute("data-i18n-placeholder", "filterPlaceholder");
+  filter.setAttribute("data-i18n-aria", "filterAria");
   filterWrap.appendChild(filter);
 
   const ul = document.createElement("ul");
@@ -93,4 +94,8 @@ export function mountBrowserPanel(container) {
     refresh();
   });
   subscribeSelection(refresh);
+  registerLocaleRefresh(() => {
+    updateTitle();
+    refresh();
+  });
 }

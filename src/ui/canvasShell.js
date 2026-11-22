@@ -1,5 +1,6 @@
 import { projectState, subscribe } from "../state/projectState.js";
 import { getSelectionCount, subscribeSelection } from "../interaction/selection.js";
+import { registerLocaleRefresh, t } from "../i18n/i18n.js";
 
 function formatZoom(z) {
   return Number(z).toFixed(2);
@@ -8,7 +9,7 @@ function formatZoom(z) {
 export function mountCanvasShell(container, statusMount) {
   const main = document.createElement("main");
   main.className = "relative flex min-w-0 flex-1 flex-col";
-  main.setAttribute("aria-label", "Obszar roboczy");
+  main.setAttribute("data-i18n-aria", "workspace");
 
   const canvasRoot = document.createElement("div");
   canvasRoot.id = "canvas-root";
@@ -44,7 +45,7 @@ export function mountCanvasShell(container, statusMount) {
   function updateStatus() {
     const zoom = formatZoom(projectState.camera.zoom);
     const n = getSelectionCount();
-    const line = `Powiększenie: ${zoom} · Zaznaczenie: ${n}`;
+    const line = t("statusZoomSelection", { zoom, n });
     if (statusMain.textContent !== line) statusMain.textContent = line;
   }
 
@@ -53,13 +54,22 @@ export function mountCanvasShell(container, statusMount) {
     if (rx === worldRx && ry === worldRy) return;
     worldRx = rx;
     worldRy = ry;
-    const worldLine = ` · Świat: ${rx}, ${ry}`;
+    const worldLine = t("statusWorld", { x: rx, y: ry });
     if (statusWorld.textContent !== worldLine) statusWorld.textContent = worldLine;
   }
 
   updateStatus();
   subscribe(updateStatus);
   subscribeSelection(updateStatus);
+  registerLocaleRefresh(updateStatus);
+  registerLocaleRefresh(() => {
+    if (worldRx == null || worldRy == null) return;
+    const rx = worldRx;
+    const ry = worldRy;
+    worldRx = null;
+    worldRy = null;
+    setWorldReadout(rx, ry);
+  });
   statusMount.appendChild(status);
 
   registerStatusWorldReadout(setWorldReadout);

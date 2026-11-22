@@ -9,6 +9,7 @@ import {
   nudgeSelectionScale,
   updateScaleGesture,
 } from "./rotateScale.js";
+import { applyI18nDom, registerLocaleRefresh, t } from "../i18n/i18n.js";
 
 const HANDLE_BTN =
   "ui-handle absolute z-20 flex items-center justify-center rounded text-sm font-semibold";
@@ -24,8 +25,8 @@ export function initSelectionHandles() {
   const rotateBtn = document.createElement("button");
   rotateBtn.type = "button";
   rotateBtn.dataset.handle = "rotate";
-  rotateBtn.setAttribute("aria-label", "Obróć o 90 stopni");
-  rotateBtn.title = "Obróć zaznaczenie o 90 stopni";
+  rotateBtn.setAttribute("data-i18n-aria", "rotateHandleAria");
+  rotateBtn.setAttribute("data-i18n-title", "rotateSelectionTitle");
   rotateBtn.textContent = "↻";
   rotateBtn.className = `${HANDLE_BTN} h-7 w-7`;
 
@@ -33,8 +34,8 @@ export function initSelectionHandles() {
   scaleHandle.dataset.handle = "scale";
   scaleHandle.setAttribute("role", "button");
   scaleHandle.tabIndex = 0;
-  scaleHandle.setAttribute("aria-label", "Skaluj zaznaczenie");
-  scaleHandle.title = "Skaluj zaznaczenie";
+  scaleHandle.setAttribute("data-i18n-aria", "scaleHandleAria");
+  scaleHandle.setAttribute("data-i18n-title", "scaleHandleTitle");
   scaleHandle.className =
     `${HANDLE_BTN} ui-handle-scale h-2.5 w-2.5 cursor-se-resize`;
 
@@ -135,6 +136,10 @@ export function initSelectionHandles() {
       nudgeWithHistory(-0.1);
     }
   });
+
+  const applyHandleLabels = () => applyI18nDom(root);
+  applyHandleLabels();
+  registerLocaleRefresh(applyHandleLabels);
 
   layout();
   subscribe(layout);

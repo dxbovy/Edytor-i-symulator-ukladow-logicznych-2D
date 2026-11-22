@@ -8,14 +8,16 @@ import {
 } from "../interaction/editCommands.js";
 import { getSelectionCount, subscribeSelection } from "../interaction/selection.js";
 import { subscribeClipboard } from "../clipboard/clipboard.js";
+import { registerLocaleRefresh, t } from "../i18n/i18n.js";
 
 const BTN_CLASS = "ui-btn disabled:cursor-not-allowed disabled:opacity-50";
 
-function cmdBtn(label) {
+function cmdBtn(labelKey, shortcut) {
   const b = document.createElement("button");
   b.type = "button";
-  b.textContent = label;
-  b.setAttribute("aria-label", label);
+  b.setAttribute("data-i18n", labelKey);
+  b.setAttribute("data-i18n-suffix", shortcut);
+  b.setAttribute("data-i18n-aria", labelKey);
   b.className = BTN_CLASS;
   return b;
 }
@@ -25,16 +27,18 @@ export function mountEditToolbar() {
   const editGroup = document.createElement("div");
   editGroup.className = "ml-2 flex flex-wrap gap-1";
   editGroup.setAttribute("role", "group");
-  editGroup.setAttribute("aria-label", "Edycja");
+  editGroup.setAttribute("data-i18n-aria", "groupEdit");
 
-  const undoBtn = cmdBtn("Cofnij Ctrl+Z");
-  const redoBtn = cmdBtn("Ponów Ctrl+Shift+Z");
-  const copyBtn = cmdBtn("Kopiuj Ctrl+C");
-  const pasteBtn = cmdBtn("Wklej Ctrl+V");
-  const delBtn = cmdBtn("Usuń Delete");
-  const rotateBtn = cmdBtn("Obrót 90°");
+  const undoBtn = cmdBtn("undo", " Ctrl+Z");
+  const redoBtn = cmdBtn("redo", " Ctrl+Shift+Z");
+  const copyBtn = cmdBtn("copy", " Ctrl+C");
+  const pasteBtn = cmdBtn("paste", " Ctrl+V");
+  const delBtn = cmdBtn("delete", " Delete");
+  const rotateBtn = cmdBtn("rotateLabel", "");
   rotateBtn.id = "rotate-90-btn";
-  rotateBtn.setAttribute("aria-label", "Obróć zaznaczenie o 90 stopni");
+  rotateBtn.removeAttribute("data-i18n-suffix");
+  rotateBtn.removeAttribute("data-i18n-aria");
+  rotateBtn.setAttribute("data-i18n-aria", "rotateSelectionAria");
 
   undoBtn.addEventListener("click", () => undo());
   redoBtn.addEventListener("click", () => redo());
@@ -52,9 +56,10 @@ export function mountEditToolbar() {
     delBtn.disabled = n === 0;
     rotateBtn.disabled = n === 0;
     rotateBtn.title =
-      n === 0 ? "Zaznacz obiekt, aby obrócić" : "Obróć zaznaczenie o 90 stopni";
+      n === 0 ? t("rotateSelectObject") : t("rotateSelectionTitle");
   };
   sync();
+  registerLocaleRefresh(sync);
   subscribeSelection(sync);
   subscribeHistory(sync);
   subscribeClipboard(sync);

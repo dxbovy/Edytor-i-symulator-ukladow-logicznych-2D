@@ -1,37 +1,34 @@
 import { fitToNodes, zoomBy } from "../canvas/camera.js";
 import { mountEditToolbar } from "./editToolbar.js";
 
-const LATER = "Funkcja dostępna w kolejnym kroku rozwoju.";
-
 const BTN_CLASS = "ui-btn";
 
-function disabledBtn(label, ariaLabel) {
+function langBtn(label, ariaKey, localeId) {
   const b = document.createElement("button");
   b.type = "button";
-  b.disabled = true;
   b.textContent = label;
-  b.setAttribute("aria-label", ariaLabel);
-  b.title = LATER;
+  b.dataset.localeToggle = localeId;
+  b.setAttribute("data-i18n-aria", ariaKey);
   b.className = BTN_CLASS;
   return b;
 }
 
-function themeBtn(label, ariaLabel, themeId) {
+function themeBtn(labelKey, ariaKey, themeId) {
   const b = document.createElement("button");
   b.type = "button";
-  b.textContent = label;
-  b.setAttribute("aria-label", ariaLabel);
   b.dataset.themeToggle = themeId;
+  b.setAttribute("data-i18n", labelKey);
+  b.setAttribute("data-i18n-aria", ariaKey);
   b.className = "ui-btn ui-theme-btn";
   return b;
 }
 
-function viewBtn(label, ariaLabel, title, onClick) {
+function viewBtn(labelKey, ariaKey, titleKey, onClick) {
   const b = document.createElement("button");
   b.type = "button";
-  b.textContent = label;
-  b.setAttribute("aria-label", ariaLabel);
-  b.title = title;
+  b.setAttribute("data-i18n", labelKey);
+  b.setAttribute("data-i18n-aria", ariaKey);
+  b.setAttribute("data-i18n-title", titleKey);
   b.className = BTN_CLASS;
   b.addEventListener("click", onClick);
   return b;
@@ -53,26 +50,26 @@ export function mountCommandBar(container) {
   bar.className =
     "ui-chrome-bar flex h-10 shrink-0 items-center gap-2 border-b px-3";
   bar.setAttribute("role", "toolbar");
-  bar.setAttribute("aria-label", "Pasek poleceń");
+  bar.setAttribute("data-i18n-aria", "commandBar");
 
   const brand = document.createElement("span");
   brand.className = "mr-2 font-semibold";
-  brand.textContent = "Układy 2D";
+  brand.setAttribute("data-i18n", "brand");
 
   const viewGroup = document.createElement("div");
   viewGroup.className = "flex gap-1";
   viewGroup.setAttribute("role", "group");
-  viewGroup.setAttribute("aria-label", "Widok");
+  viewGroup.setAttribute("data-i18n-aria", "groupView");
   viewGroup.append(
-    viewBtn("Dopasuj", "Dopasuj widok do zawartości", "Dopasuj widok do zawartości", () => {
+    viewBtn("fit", "fitView", "fitView", () => {
       const { w, h } = canvasCenter();
       fitToNodes(w, h);
     }),
-    viewBtn("Zoom +", "Powiększenie o 10%", "Powiększenie o 10%", () => {
+    viewBtn("zoomIn", "zoomInAria", "zoomInAria", () => {
       const { x, y } = canvasCenter();
       zoomBy(x, y, 1.1);
     }),
-    viewBtn("Zoom −", "Pomniejszenie o 10%", "Pomniejszenie o 10%", () => {
+    viewBtn("zoomOut", "zoomOutAria", "zoomOutAria", () => {
       const { x, y } = canvasCenter();
       zoomBy(x, y, 1 / 1.1);
     })
@@ -81,20 +78,20 @@ export function mountCommandBar(container) {
   const themeGroup = document.createElement("div");
   themeGroup.className = "ml-auto flex gap-1";
   themeGroup.setAttribute("role", "group");
-  themeGroup.setAttribute("aria-label", "Motyw");
+  themeGroup.setAttribute("data-i18n-aria", "groupTheme");
   themeGroup.append(
-    themeBtn("Jasny", "Motyw jasny", "light"),
-    themeBtn("Ciemny", "Motyw ciemny", "dark"),
-    themeBtn("Wysoki kontrast", "Motyw wysokiego kontrastu", "high-contrast")
+    themeBtn("themeLight", "themeLightAria", "light"),
+    themeBtn("themeDark", "themeDarkAria", "dark"),
+    themeBtn("themeHighContrast", "themeHighContrastAria", "high-contrast")
   );
 
   const langGroup = document.createElement("div");
   langGroup.className = "flex gap-1";
   langGroup.setAttribute("role", "group");
-  langGroup.setAttribute("aria-label", "Język");
+  langGroup.setAttribute("data-i18n-aria", "groupLanguage");
   langGroup.append(
-    disabledBtn("PL", "Język polski"),
-    disabledBtn("EN", "Język angielski")
+    langBtn("PL", "langPlAria", "pl"),
+    langBtn("EN", "langEnAria", "en")
   );
 
   bar.append(brand, viewGroup, mountEditToolbar(), themeGroup, langGroup);
