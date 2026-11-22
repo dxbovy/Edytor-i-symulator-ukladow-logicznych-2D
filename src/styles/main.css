@@ -34,7 +34,7 @@
 [data-theme="high-contrast"] {
   --canvas-bg: #000000;
   --grid: #8a8a8a;
-  --grid-major: #ffffff;
+  --grid-major: #d4d4d4;
   --selection: #ffe600;
   --fg: #ffffff;
   --chrome: #000000;
