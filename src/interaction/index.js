@@ -8,6 +8,8 @@ import {
   captureDragStarts,
   CLICK_PX,
   finishDragGesture,
+  restoreDragStarts,
+  screenSpanPx,
 } from "./drag.js";
 import {
   ensureMarqueeOverlay,
@@ -30,13 +32,15 @@ export function initInteraction() {
   let startScreenY = 0;
   let lastScreenX = 0;
   let lastScreenY = 0;
-  let movedPx = 0;
   let dragStarts = null;
 
   const screenFromEvent = (event) => {
     const r = root.getBoundingClientRect();
     return { x: event.clientX - r.left, y: event.clientY - r.top };
   };
+
+  const screenSpan = () =>
+    screenSpanPx(startScreenX, startScreenY, lastScreenX, lastScreenY);
 
   const release = () => {
     if (pointerId !== null && root.hasPointerCapture(pointerId)) {
@@ -50,13 +54,26 @@ export function initInteraction() {
     hideMarquee(overlay);
   };
 
+  const abortForPan = () => {
+    if (dragStarts) restoreDragStarts(dragStarts);
+    active = false;
+    pointerId = null;
+    mode = null;
+    hitId = null;
+    dragStarts = null;
+    hideMarquee(overlay);
+  };
+
   root.addEventListener("pointerdown", (event) => {
+    if (active && isViewPan(event)) {
+      abortForPan();
+      return;
+    }
     if (isViewPan(event) || event.button !== 0) return;
     const screen = screenFromEvent(event);
     const world = screenToWorld(screen.x, screen.y, projectState.camera);
     const id = hitTestTopNode(world.x, world.y);
     shiftKey = event.shiftKey;
-    movedPx = 0;
     startScreenX = lastScreenX = screen.x;
     startScreenY = lastScreenY = screen.y;
     hitId = id;
@@ -77,18 +94,18 @@ export function initInteraction() {
 
   root.addEventListener("pointermove", (event) => {
     if (!active || event.pointerId !== pointerId) return;
-    movedPx += Math.hypot(event.movementX, event.movementY);
     const screen = screenFromEvent(event);
     lastScreenX = screen.x;
     lastScreenY = screen.y;
+    const span = screenSpan();
     if (mode === "drag" && dragStarts) {
       applyDragFromScreenDelta(
         dragStarts,
         lastScreenX - startScreenX,
         lastScreenY - startScreenY,
-        movedPx
+        span
       );
-    } else if (mode === "marquee" && movedPx >= CLICK_PX) {
+    } else if (mode === "marquee" && span >= CLICK_PX) {
       paintMarquee(
         overlay,
         startScreenX,
@@ -101,15 +118,14 @@ export function initInteraction() {
 
   const finish = (event) => {
     if (!active || event.pointerId !== pointerId) return;
-    if (isViewPan(event)) return release();
-    if (mode === "drag") finishDragGesture(movedPx, hitId, dragStarts);
+    const span = screenSpan();
+    if (mode === "drag") finishDragGesture(span, hitId, dragStarts);
     else if (mode === "marquee") {
       finishMarquee(
         startScreenX,
         startScreenY,
         lastScreenX,
         lastScreenY,
-        movedPx,
         shiftKey
       );
     }

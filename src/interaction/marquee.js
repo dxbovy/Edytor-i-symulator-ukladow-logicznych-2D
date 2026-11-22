@@ -2,7 +2,7 @@ import { projectState } from "../state/projectState.js";
 import { screenToWorld } from "../canvas/coordinates.js";
 import { nodesIntersectingRect, worldRectFromPoints } from "./hitTest.js";
 import { clear, selectMany } from "./selection.js";
-import { CLICK_PX } from "./drag.js";
+import { CLICK_PX, screenSpanPx } from "./drag.js";
 
 export function ensureMarqueeOverlay(root) {
   let el = document.getElementById("marquee-overlay");
@@ -36,10 +36,10 @@ export function finishMarquee(
   startScreenY,
   endScreenX,
   endScreenY,
-  movedPx,
   shiftKey
 ) {
-  if (movedPx < CLICK_PX) {
+  const span = screenSpanPx(startScreenX, startScreenY, endScreenX, endScreenY);
+  if (span < CLICK_PX) {
     if (!shiftKey) clear();
     return;
   }

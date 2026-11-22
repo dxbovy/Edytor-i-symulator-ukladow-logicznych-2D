@@ -4,6 +4,10 @@ import { getSelectedIds, selectOnly } from "./selection.js";
 
 export const CLICK_PX = 4;
 
+export function screenSpanPx(sx, sy, ex, ey) {
+  return Math.hypot(ex - sx, ey - sy);
+}
+
 /** @returns {Record<string, { x: number, y: number }>} */
 export function captureDragStarts() {
   /** @type {Record<string, { x: number, y: number }>} */
@@ -19,9 +23,9 @@ export function applyDragFromScreenDelta(
   starts,
   screenDx,
   screenDy,
-  movedPx
+  screenSpan
 ) {
-  if (movedPx < CLICK_PX) return;
+  if (screenSpan < CLICK_PX) return;
   const z = projectState.camera.zoom;
   const dx = screenDx / z;
   const dy = screenDy / z;
@@ -46,8 +50,8 @@ export function restoreDragStarts(starts) {
   notify();
 }
 
-export function finishDragGesture(movedPx, hitId, starts) {
-  if (movedPx >= CLICK_PX) snapSelectedToGrid();
+export function finishDragGesture(screenSpan, hitId, starts) {
+  if (screenSpan >= CLICK_PX) snapSelectedToGrid();
   else {
     if (starts) restoreDragStarts(starts);
     if (hitId) selectOnly(hitId);
