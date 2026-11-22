@@ -17,6 +17,10 @@ import {
   hideMarquee,
   paintMarquee,
 } from "./marquee.js";
+import {
+  initSelectionHandles,
+  isSelectionHandleTarget,
+} from "./handles.js";
 
 export function initInteraction() {
   const root = document.getElementById("canvas-root");
@@ -64,7 +68,10 @@ export function initInteraction() {
     hideMarquee(overlay);
   };
 
+  initSelectionHandles();
+
   root.addEventListener("pointerdown", (event) => {
+    if (isSelectionHandleTarget(event.target)) return;
     if (active && isViewPan(event)) {
       abortForPan();
       return;

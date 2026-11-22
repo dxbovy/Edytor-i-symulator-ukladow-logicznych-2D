@@ -1,0 +1,113 @@
+import { subscribe } from "../state/projectState.js";
+import { isViewPan } from "../canvas/cameraInput.js";
+import { getSelectedIds, subscribeSelection } from "./selection.js";
+import { selectionWorldBounds, boundsScreenRect } from "./geometry.js";
+import {
+  beginScaleGesture,
+  nudgeSelectionScale,
+  rotateSelection90,
+  updateScaleGesture,
+} from "./rotateScale.js";
+
+const HANDLE_BTN =
+  "absolute z-20 flex items-center justify-center rounded border border-blue-700 bg-white text-blue-800 shadow focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600";
+
+export function isSelectionHandleTarget(target) {
+  return target instanceof Element && Boolean(target.closest("[data-handle]"));
+}
+
+export function initSelectionHandles() {
+  const root = document.getElementById("canvas-root");
+  if (!root) return;
+
+  const rotateBtn = document.createElement("button");
+  rotateBtn.type = "button";
+  rotateBtn.dataset.handle = "rotate";
+  rotateBtn.setAttribute("aria-label", "Obróć o 90 stopni");
+  rotateBtn.title = "Obróć zaznaczenie o 90 stopni";
+  rotateBtn.textContent = "↻";
+  rotateBtn.className = `${HANDLE_BTN} h-7 w-7 text-sm font-semibold`;
+
+  const scaleHandle = document.createElement("div");
+  scaleHandle.dataset.handle = "scale";
+  scaleHandle.setAttribute("role", "button");
+  scaleHandle.tabIndex = 0;
+  scaleHandle.setAttribute("aria-label", "Skaluj zaznaczenie");
+  scaleHandle.title = "Skaluj zaznaczenie";
+  scaleHandle.className = `${HANDLE_BTN} h-2.5 w-2.5 cursor-se-resize bg-blue-700`;
+
+  root.append(rotateBtn, scaleHandle);
+
+  let scaleGesture = null;
+  let scalePointerId = null;
+
+  const layout = () => {
+    const ids = getSelectedIds();
+    if (ids.length === 0) {
+      rotateBtn.style.display = "none";
+      scaleHandle.style.display = "none";
+      return;
+    }
+    const bounds = selectionWorldBounds(ids);
+    if (!bounds) {
+      rotateBtn.style.display = "none";
+      scaleHandle.style.display = "none";
+      return;
+    }
+    const rect = boundsScreenRect(bounds);
+    rotateBtn.style.display = "flex";
+    scaleHandle.style.display = "block";
+    rotateBtn.style.left = `${rect.left + rect.width / 2 - 14}px`;
+    rotateBtn.style.top = `${rect.top - 32}px`;
+    scaleHandle.style.left = `${rect.right - 5}px`;
+    scaleHandle.style.top = `${rect.bottom - 5}px`;
+  };
+
+  rotateBtn.addEventListener("click", () => rotateSelection90());
+  rotateBtn.addEventListener("pointerdown", (e) => e.stopPropagation());
+
+  const onScaleDown = (event) => {
+    if (isViewPan(event) || event.button !== 0) return;
+    event.stopPropagation();
+    event.preventDefault();
+    scaleGesture = beginScaleGesture(event.clientX, event.clientY);
+    if (!scaleGesture) return;
+    scalePointerId = event.pointerId;
+    scaleHandle.setPointerCapture(event.pointerId);
+  };
+
+  const onScaleMove = (event) => {
+    if (scalePointerId === null || event.pointerId !== scalePointerId) return;
+    if (isViewPan(event)) return;
+    if (!scaleGesture) return;
+    updateScaleGesture(scaleGesture, event.clientX, event.clientY);
+  };
+
+  const onScaleEnd = (event) => {
+    if (scalePointerId === null || event.pointerId !== scalePointerId) return;
+    scaleGesture = null;
+    scalePointerId = null;
+    if (scaleHandle.hasPointerCapture(event.pointerId)) {
+      scaleHandle.releasePointerCapture(event.pointerId);
+    }
+  };
+
+  scaleHandle.addEventListener("pointerdown", onScaleDown);
+  scaleHandle.addEventListener("pointermove", onScaleMove);
+  scaleHandle.addEventListener("pointerup", onScaleEnd);
+  scaleHandle.addEventListener("pointercancel", onScaleEnd);
+  scaleHandle.addEventListener("keydown", (event) => {
+    if (event.key === "ArrowUp" || event.key === "ArrowRight") {
+      event.preventDefault();
+      nudgeSelectionScale(0.1);
+    } else if (event.key === "ArrowDown" || event.key === "ArrowLeft") {
+      event.preventDefault();
+      nudgeSelectionScale(-0.1);
+    }
+  });
+
+  layout();
+  subscribe(layout);
+  subscribeSelection(layout);
+  new ResizeObserver(layout).observe(root);
+}
