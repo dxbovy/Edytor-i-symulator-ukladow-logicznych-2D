@@ -49,3 +49,22 @@ export function removeNodes(ids) {
   for (const id of ids) delete projectState.nodes[id];
   notify();
 }
+
+/** @param {Record<string, { x: number, y: number, rotation: number, scale: number }>} before */
+/** @param {Record<string, { x: number, y: number, rotation: number, scale: number }>} after */
+export function transformsDiffer(before, after) {
+  for (const id of Object.keys(before)) {
+    const a = before[id];
+    const b = after[id];
+    if (!a || !b) continue;
+    if (
+      a.x !== b.x ||
+      a.y !== b.y ||
+      a.rotation !== b.rotation ||
+      a.scale !== b.scale
+    ) {
+      return true;
+    }
+  }
+  return false;
+}

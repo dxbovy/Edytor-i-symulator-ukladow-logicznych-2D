@@ -2,7 +2,7 @@ import { subscribe } from "../state/projectState.js";
 import { isViewPan } from "../canvas/cameraInput.js";
 import { getSelectedIds, subscribeSelection } from "./selection.js";
 import { selectionWorldBounds, boundsScreenRect } from "./geometry.js";
-import { captureTransforms } from "../history/snapshots.js";
+import { captureTransforms, transformsDiffer } from "../history/snapshots.js";
 import { pushTransformCommand, rotateSelection90WithHistory } from "./editCommands.js";
 import {
   beginScaleGesture,
@@ -98,22 +98,9 @@ export function initSelectionHandles() {
     const ids = getSelectedIds();
     if (scaleBefore && ids.length) {
       const after = captureTransforms(ids);
-      let changed = false;
-      for (const id of ids) {
-        const a = scaleBefore[id];
-        const b = after[id];
-        if (!a || !b) continue;
-        if (
-          a.x !== b.x ||
-          a.y !== b.y ||
-          a.rotation !== b.rotation ||
-          a.scale !== b.scale
-        ) {
-          changed = true;
-          break;
-        }
+      if (transformsDiffer(scaleBefore, after)) {
+        pushTransformCommand(scaleBefore, after, ids);
       }
-      if (changed) pushTransformCommand(scaleBefore, after, ids);
     }
     scaleBefore = null;
     scaleGesture = null;
@@ -127,13 +114,24 @@ export function initSelectionHandles() {
   scaleHandle.addEventListener("pointermove", onScaleMove);
   scaleHandle.addEventListener("pointerup", onScaleEnd);
   scaleHandle.addEventListener("pointercancel", onScaleEnd);
+  const nudgeWithHistory = (delta) => {
+    const ids = getSelectedIds();
+    if (ids.length === 0) return;
+    const before = captureTransforms(ids);
+    nudgeSelectionScale(delta);
+    const after = captureTransforms(ids);
+    if (transformsDiffer(before, after)) {
+      pushTransformCommand(before, after, ids);
+    }
+  };
+
   scaleHandle.addEventListener("keydown", (event) => {
     if (event.key === "ArrowUp" || event.key === "ArrowRight") {
       event.preventDefault();
-      nudgeSelectionScale(0.1);
+      nudgeWithHistory(0.1);
     } else if (event.key === "ArrowDown" || event.key === "ArrowLeft") {
       event.preventDefault();
-      nudgeSelectionScale(-0.1);
+      nudgeWithHistory(-0.1);
     }
   });
 

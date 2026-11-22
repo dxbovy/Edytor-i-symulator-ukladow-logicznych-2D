@@ -14,18 +14,20 @@ function editableTarget(target) {
   return Boolean(ce && ce.getAttribute("contenteditable") !== "false");
 }
 
+function isKeyZ(event) {
+  return event.key.toLowerCase() === "z" || event.code === "KeyZ";
+}
+
 function onKeyDown(event) {
   if (editableTarget(event.target)) return;
-  if (event.ctrlKey && event.key === "z" && !event.shiftKey) {
-    if (!canUndo()) return;
+  if (event.ctrlKey && isKeyZ(event) && !event.shiftKey) {
     event.preventDefault();
-    undo();
+    if (canUndo()) undo();
     return;
   }
-  if (event.ctrlKey && event.key === "z" && event.shiftKey) {
-    if (!canRedo()) return;
+  if (event.ctrlKey && isKeyZ(event) && event.shiftKey) {
     event.preventDefault();
-    redo();
+    if (canRedo()) redo();
     return;
   }
   if (event.ctrlKey && (event.key === "c" || event.key === "C")) {
