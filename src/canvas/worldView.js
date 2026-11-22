@@ -5,8 +5,7 @@ import {
   subscribeSelection,
 } from "../interaction/selection.js";
 
-const SELECTED_OUTLINE =
-  "2px solid #1d4ed8";
+const SELECTED_OUTLINE = "2px solid var(--selection)";
 
 function worldTransformString(camera) {
   const { x, y, zoom } = camera;
@@ -39,8 +38,7 @@ function createNodeEl(id, node) {
   const { w, h } = nodeSizeFor(node.type);
   const el = document.createElement("div");
   el.dataset.nodeId = id;
-  el.className =
-    "absolute box-border border border-gray-400 bg-white text-[10px] text-gray-700";
+  el.className = "ui-node absolute box-border text-[10px]";
   el.style.width = `${w}px`;
   el.style.height = `${h}px`;
   const label = document.createElement("span");

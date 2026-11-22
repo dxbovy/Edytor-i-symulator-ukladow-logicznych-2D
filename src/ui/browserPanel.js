@@ -11,12 +11,8 @@ function nodeLabel(id, node) {
 }
 
 function rowClass(selected) {
-  const base =
-    "w-full rounded px-2 py-1.5 text-left text-xs focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-blue-700";
-  if (selected) {
-    return `${base} border-l-2 border-blue-700 bg-blue-50`;
-  }
-  return `${base} hover:bg-gray-100`;
+  const base = "ui-list-row w-full rounded px-2 py-1.5 text-left text-xs";
+  return selected ? `${base} ui-list-row--selected` : base;
 }
 
 function renderList(ul, filter) {
@@ -46,7 +42,7 @@ function renderList(ul, filter) {
 
   if (entries.length === 0) {
     const li = document.createElement("li");
-    li.className = "px-2 py-2 text-xs text-gray-500";
+    li.className = "ui-muted px-2 py-2 text-xs";
     li.textContent = "Brak pasujących obiektów.";
     ul.appendChild(li);
   }
@@ -54,14 +50,13 @@ function renderList(ul, filter) {
 
 export function mountBrowserPanel(container) {
   const aside = document.createElement("aside");
-  aside.className =
-    "flex w-60 shrink-0 flex-col border-r border-gray-300 bg-white";
+  aside.className = "ui-panel flex w-60 shrink-0 flex-col border-r";
   aside.setAttribute("aria-label", "Przeglądarka obiektów");
 
   const head = document.createElement("div");
-  head.className = "border-b border-gray-200 px-3 py-2";
+  head.className = "border-b border-[var(--line)] px-3 py-2";
   const title = document.createElement("h2");
-  title.className = "text-xs font-semibold text-gray-700";
+  title.className = "text-xs font-semibold";
   function updateTitle() {
     const n = Object.keys(projectState.nodes).length;
     title.textContent = `Obiekty (${n})`;
@@ -70,11 +65,10 @@ export function mountBrowserPanel(container) {
   head.appendChild(title);
 
   const filterWrap = document.createElement("div");
-  filterWrap.className = "border-b border-gray-200 px-3 py-2";
+  filterWrap.className = "border-b border-[var(--line)] px-3 py-2";
   const filter = document.createElement("input");
   filter.type = "search";
-  filter.className =
-    "w-full rounded border border-gray-300 px-2 py-1 text-xs";
+  filter.className = "ui-field w-full rounded px-2 py-1 text-xs";
   filter.placeholder = "Filtruj po nazwie lub typie";
   filter.setAttribute("aria-label", "Filtruj listę obiektów");
   filterWrap.appendChild(filter);

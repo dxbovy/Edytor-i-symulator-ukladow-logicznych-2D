@@ -11,7 +11,7 @@ import {
 } from "./rotateScale.js";
 
 const HANDLE_BTN =
-  "absolute z-20 flex items-center justify-center rounded border border-blue-700 bg-white text-blue-800 shadow focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600";
+  "ui-handle absolute z-20 flex items-center justify-center rounded text-sm font-semibold";
 
 export function isSelectionHandleTarget(target) {
   return target instanceof Element && Boolean(target.closest("[data-handle]"));
@@ -27,7 +27,7 @@ export function initSelectionHandles() {
   rotateBtn.setAttribute("aria-label", "Obróć o 90 stopni");
   rotateBtn.title = "Obróć zaznaczenie o 90 stopni";
   rotateBtn.textContent = "↻";
-  rotateBtn.className = `${HANDLE_BTN} h-7 w-7 text-sm font-semibold`;
+  rotateBtn.className = `${HANDLE_BTN} h-7 w-7`;
 
   const scaleHandle = document.createElement("div");
   scaleHandle.dataset.handle = "scale";
@@ -35,7 +35,8 @@ export function initSelectionHandles() {
   scaleHandle.tabIndex = 0;
   scaleHandle.setAttribute("aria-label", "Skaluj zaznaczenie");
   scaleHandle.title = "Skaluj zaznaczenie";
-  scaleHandle.className = `${HANDLE_BTN} h-2.5 w-2.5 cursor-se-resize bg-blue-700`;
+  scaleHandle.className =
+    `${HANDLE_BTN} ui-handle-scale h-2.5 w-2.5 cursor-se-resize`;
 
   root.append(rotateBtn, scaleHandle);
 

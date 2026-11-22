@@ -4,8 +4,18 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Edytor układów logicznych 2D</title>
+    <script>
+      (function () {
+        var t = "light";
+        try {
+          var o = JSON.parse(localStorage.getItem("ui-preferences") || "{}");
+          if (o.theme === "dark" || o.theme === "high-contrast") t = o.theme;
+        } catch (e) {}
+        document.documentElement.dataset.theme = t;
+      })();
+    </script>
   </head>
-  <body class="m-0 h-screen overflow-hidden bg-[#e0e0e0] text-sm text-gray-900">
+  <body class="ui-app m-0 h-screen overflow-hidden text-sm">
     <div id="app" class="flex h-full flex-col"></div>
     <script type="module" src="/src/main.js"></script>
   </body>

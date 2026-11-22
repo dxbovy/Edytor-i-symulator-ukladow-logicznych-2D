@@ -9,8 +9,7 @@ import {
 import { getSelectionCount, subscribeSelection } from "../interaction/selection.js";
 import { subscribeClipboard } from "../clipboard/clipboard.js";
 
-const BTN_CLASS =
-  "rounded border border-gray-300 bg-white px-2 py-1 text-xs hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 disabled:cursor-not-allowed disabled:opacity-50";
+const BTN_CLASS = "ui-btn disabled:cursor-not-allowed disabled:opacity-50";
 
 function cmdBtn(label) {
   const b = document.createElement("button");

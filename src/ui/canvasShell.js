@@ -12,7 +12,7 @@ export function mountCanvasShell(container, statusMount) {
 
   const canvasRoot = document.createElement("div");
   canvasRoot.id = "canvas-root";
-  canvasRoot.className = "relative flex-1 overflow-hidden bg-[#f4f5f7]";
+  canvasRoot.className = "relative flex-1 overflow-hidden";
 
   const world = document.createElement("div");
   world.id = "world";
@@ -26,7 +26,7 @@ export function mountCanvasShell(container, statusMount) {
   const status = document.createElement("div");
   status.id = "status-region";
   status.className =
-    "pointer-events-none absolute bottom-3 right-4 rounded border border-gray-300 bg-white/95 px-3 py-1.5 text-xs text-gray-800 shadow-sm";
+    "ui-status pointer-events-none absolute bottom-3 right-4 rounded px-3 py-1.5 text-xs shadow-sm";
 
   const statusMain = document.createElement("span");
   statusMain.setAttribute("role", "status");

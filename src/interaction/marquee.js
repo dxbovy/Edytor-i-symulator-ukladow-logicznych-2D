@@ -9,8 +9,7 @@ export function ensureMarqueeOverlay(root) {
   if (el) return el;
   el = document.createElement("div");
   el.id = "marquee-overlay";
-  el.className =
-    "pointer-events-none absolute z-10 border border-blue-700 bg-blue-700/10";
+  el.className = "ui-marquee pointer-events-none absolute z-10";
   el.setAttribute("aria-hidden", "true");
   el.style.display = "none";
   root.appendChild(el);

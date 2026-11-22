@@ -3,8 +3,7 @@ import { mountEditToolbar } from "./editToolbar.js";
 
 const LATER = "Funkcja dostępna w kolejnym kroku rozwoju.";
 
-const BTN_CLASS =
-  "rounded border border-gray-300 bg-white px-2 py-1 text-xs hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600";
+const BTN_CLASS = "ui-btn";
 
 function disabledBtn(label, ariaLabel) {
   const b = document.createElement("button");
@@ -14,6 +13,16 @@ function disabledBtn(label, ariaLabel) {
   b.setAttribute("aria-label", ariaLabel);
   b.title = LATER;
   b.className = BTN_CLASS;
+  return b;
+}
+
+function themeBtn(label, ariaLabel, themeId) {
+  const b = document.createElement("button");
+  b.type = "button";
+  b.textContent = label;
+  b.setAttribute("aria-label", ariaLabel);
+  b.dataset.themeToggle = themeId;
+  b.className = "ui-btn ui-theme-btn";
   return b;
 }
 
@@ -42,12 +51,12 @@ function canvasCenter() {
 export function mountCommandBar(container) {
   const bar = document.createElement("header");
   bar.className =
-    "flex h-10 shrink-0 items-center gap-2 border-b border-gray-300 bg-[#e8e8e8] px-3";
+    "ui-chrome-bar flex h-10 shrink-0 items-center gap-2 border-b px-3";
   bar.setAttribute("role", "toolbar");
   bar.setAttribute("aria-label", "Pasek poleceń");
 
   const brand = document.createElement("span");
-  brand.className = "mr-2 font-semibold text-gray-800";
+  brand.className = "mr-2 font-semibold";
   brand.textContent = "Układy 2D";
 
   const viewGroup = document.createElement("div");
@@ -74,9 +83,9 @@ export function mountCommandBar(container) {
   themeGroup.setAttribute("role", "group");
   themeGroup.setAttribute("aria-label", "Motyw");
   themeGroup.append(
-    disabledBtn("Jasny", "Motyw jasny"),
-    disabledBtn("Ciemny", "Motyw ciemny"),
-    disabledBtn("Wysoki kontrast", "Motyw wysokiego kontrastu")
+    themeBtn("Jasny", "Motyw jasny", "light"),
+    themeBtn("Ciemny", "Motyw ciemny", "dark"),
+    themeBtn("Wysoki kontrast", "Motyw wysokiego kontrastu", "high-contrast")
   );
 
   const langGroup = document.createElement("div");
