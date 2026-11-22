@@ -1,4 +1,5 @@
 import { projectState, subscribe } from "../state/projectState.js";
+import { getSelectionCount, subscribeSelection } from "../interaction/selection.js";
 
 function formatZoom(z) {
   return Number(z).toFixed(2);
@@ -42,7 +43,8 @@ export function mountCanvasShell(container, statusMount) {
 
   function updateStatus() {
     const zoom = formatZoom(projectState.camera.zoom);
-    const line = `Powiększenie: ${zoom} · Zaznaczenie: 0`;
+    const n = getSelectionCount();
+    const line = `Powiększenie: ${zoom} · Zaznaczenie: ${n}`;
     if (statusMain.textContent !== line) statusMain.textContent = line;
   }
 
@@ -57,6 +59,7 @@ export function mountCanvasShell(container, statusMount) {
 
   updateStatus();
   subscribe(updateStatus);
+  subscribeSelection(updateStatus);
   statusMount.appendChild(status);
 
   registerStatusWorldReadout(setWorldReadout);

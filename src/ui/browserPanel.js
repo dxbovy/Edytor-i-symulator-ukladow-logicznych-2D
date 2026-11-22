@@ -1,9 +1,22 @@
 import { projectState, subscribe } from "../state/projectState.js";
-
-const ROW_LATER = "Wybór obiektu na kanwie — w kolejnym kroku.";
+import {
+  isSelected,
+  selectOnly,
+  subscribeSelection,
+  toggle,
+} from "../interaction/selection.js";
 
 function nodeLabel(id, node) {
   return `${node.type} · ${id}`;
+}
+
+function rowClass(selected) {
+  const base =
+    "w-full rounded px-2 py-1.5 text-left text-xs focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-blue-700";
+  if (selected) {
+    return `${base} border-l-2 border-blue-700 bg-blue-50`;
+  }
+  return `${base} hover:bg-gray-100`;
 }
 
 function renderList(ul, filter) {
@@ -19,12 +32,14 @@ function renderList(ul, filter) {
     const li = document.createElement("li");
     const btn = document.createElement("button");
     btn.type = "button";
-    btn.disabled = true;
-    btn.className =
-      "w-full rounded px-2 py-1.5 text-left text-xs hover:bg-gray-100";
+    btn.className = rowClass(isSelected(id));
     btn.textContent = nodeLabel(id, node);
     btn.setAttribute("aria-label", `Obiekt: ${nodeLabel(id, node)}`);
-    btn.title = ROW_LATER;
+    btn.setAttribute("aria-selected", isSelected(id) ? "true" : "false");
+    btn.addEventListener("click", (event) => {
+      if (event.shiftKey) toggle(id);
+      else selectOnly(id);
+    });
     li.appendChild(btn);
     ul.appendChild(li);
   }
@@ -71,10 +86,17 @@ export function mountBrowserPanel(container) {
   aside.append(head, filterWrap, ul);
   container.appendChild(aside);
 
+  let lastFilter = "";
+  const refresh = () => renderList(ul, lastFilter);
+
   renderList(ul, "");
-  filter.addEventListener("input", () => renderList(ul, filter.value));
+  filter.addEventListener("input", () => {
+    lastFilter = filter.value;
+    refresh();
+  });
   subscribe(() => {
     updateTitle();
-    renderList(ul, filter.value);
+    refresh();
   });
+  subscribeSelection(refresh);
 }

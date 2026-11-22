@@ -1,5 +1,12 @@
 import { panByScreen, zoomBy } from "./camera.js";
 
+/** @type {(event: PointerEvent) => boolean} */
+let isViewPanFromState = () => false;
+
+export function isViewPan(event) {
+  return isViewPanFromState(event);
+}
+
 function isEditableTarget(target) {
   if (!(target instanceof Element)) return false;
   const tag = target.tagName;
@@ -29,6 +36,9 @@ export function attachCameraInput() {
 
   let spaceArmed = false;
   let panning = false;
+
+  isViewPanFromState = (event) =>
+    event.button === 1 || (event.button === 0 && spaceArmed);
 
   window.addEventListener("keydown", (event) => {
     if (event.code !== "Space" || event.repeat) return;
