@@ -16,7 +16,7 @@ export const enChrome = {
   redo: "Redo",
   copy: "Copy",
   paste: "Paste",
-  delete: "Delete",
+  delete: "Remove",
   rotateLabel: "Rotate 90°",
   rotateSelectionAria: "Rotate selection 90 degrees",
   rotateSelectObject: "Select an object to rotate",
