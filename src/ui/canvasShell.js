@@ -26,19 +26,24 @@ export function mountCanvasShell(container, statusMount) {
   status.id = "status-region";
   status.className =
     "pointer-events-none absolute bottom-3 right-4 rounded border border-gray-300 bg-white/95 px-3 py-1.5 text-xs text-gray-800 shadow-sm";
-  status.setAttribute("aria-live", "polite");
-  status.setAttribute("role", "status");
+
+  const statusMain = document.createElement("span");
+  statusMain.setAttribute("role", "status");
+  statusMain.setAttribute("aria-live", "polite");
+
+  const statusWorld = document.createElement("span");
+  statusWorld.setAttribute("aria-live", "off");
+
+  status.appendChild(statusMain);
+  status.appendChild(statusWorld);
 
   let worldRx = null;
   let worldRy = null;
 
   function updateStatus() {
     const zoom = formatZoom(projectState.camera.zoom);
-    let line = `Powiększenie: ${zoom} · Zaznaczenie: 0`;
-    if (worldRx !== null && worldRy !== null) {
-      line += ` · Świat: ${worldRx}, ${worldRy}`;
-    }
-    if (status.textContent !== line) status.textContent = line;
+    const line = `Powiększenie: ${zoom} · Zaznaczenie: 0`;
+    if (statusMain.textContent !== line) statusMain.textContent = line;
   }
 
   /** @param {number} rx @param {number} ry */
@@ -46,7 +51,8 @@ export function mountCanvasShell(container, statusMount) {
     if (rx === worldRx && ry === worldRy) return;
     worldRx = rx;
     worldRy = ry;
-    updateStatus();
+    const worldLine = ` · Świat: ${rx}, ${ry}`;
+    if (statusWorld.textContent !== worldLine) statusWorld.textContent = worldLine;
   }
 
   updateStatus();
