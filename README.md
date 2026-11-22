@@ -1,5 +1,14 @@
 # Edytor i symulator układów logicznych 2D
 
+## Uruchomienie
+
+```bash
+npm install
+npm run dev
+```
+
+Produkcja: `npm run build`, podgląd: `npm run preview`.
+
 ## Definicje bramek w kodzie powinny wyglądać tak:
 
 ```javascript
