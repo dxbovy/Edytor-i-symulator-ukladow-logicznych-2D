@@ -1,15 +1,19 @@
 import {
   applyI18nDom,
-  initLocaleFromStorage,
   setLocale,
   subscribeLocale,
   syncLocaleButtons,
 } from "./i18n.js";
 
-export { getLocale, setLocale, subscribeLocale, t } from "./i18n.js";
+export {
+  getLocale,
+  initLocaleFromStorage,
+  setLocale,
+  subscribeLocale,
+  t,
+} from "./i18n.js";
 
 export function initI18n() {
-  initLocaleFromStorage();
   applyI18nDom();
   syncLocaleButtons();
 

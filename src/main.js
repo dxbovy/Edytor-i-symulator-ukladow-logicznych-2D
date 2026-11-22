@@ -6,11 +6,12 @@ import { initCanvas } from "./canvas/index.js";
 import { initInteraction } from "./interaction/index.js";
 import { initHistory } from "./history/index.js";
 import { initTheme } from "./theme/index.js";
-import { initI18n } from "./i18n/index.js";
+import { initI18n, initLocaleFromStorage } from "./i18n/index.js";
 
 const app = document.getElementById("app");
 if (!app) throw new Error("Brak elementu #app");
 
+initLocaleFromStorage();
 mountCommandBar(app);
 
 const bodyRow = document.createElement("div");
