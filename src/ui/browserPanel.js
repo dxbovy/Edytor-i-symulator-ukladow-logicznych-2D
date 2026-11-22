@@ -1,52 +1,18 @@
 import { projectState, subscribe } from "../state/projectState.js";
-import {
-  isSelected,
-  selectOnly,
-  subscribeSelection,
-  toggle,
-} from "../interaction/selection.js";
-import { registerLocaleRefresh, t } from "../i18n/i18n.js";
+import { subscribeSelection } from "../interaction/selection.js";
+import { applyI18nDom, registerLocaleRefresh, t } from "../i18n/i18n.js";
+import { renderObjectList } from "./browserObjectList.js";
+import { mountLibraryPanel } from "./browserLibrary.js";
 
-function nodeLabel(id, node) {
-  return `${node.type} · ${id}`;
-}
+const TAB_BTN =
+  "ui-btn flex-1 rounded-t px-2 py-1.5 text-xs font-medium";
 
-function rowClass(selected) {
-  const base = "ui-list-row w-full rounded px-2 py-1.5 text-left text-xs";
-  return selected ? `${base} ui-list-row--selected` : base;
-}
-
-function renderList(ul, filter) {
-  ul.replaceChildren();
-  const q = filter.trim().toLowerCase();
-  const entries = Object.entries(projectState.nodes).filter(([id, node]) => {
-    if (!q) return true;
-    const hay = `${node.type} ${id}`.toLowerCase();
-    return hay.includes(q);
-  });
-
-  for (const [id, node] of entries) {
-    const li = document.createElement("li");
-    const btn = document.createElement("button");
-    btn.type = "button";
-    btn.className = rowClass(isSelected(id));
-    btn.textContent = nodeLabel(id, node);
-    btn.setAttribute("aria-label", t("objectAria", { label: nodeLabel(id, node) }));
-    btn.setAttribute("aria-selected", isSelected(id) ? "true" : "false");
-    btn.addEventListener("click", (event) => {
-      if (event.shiftKey) toggle(id);
-      else selectOnly(id);
-    });
-    li.appendChild(btn);
-    ul.appendChild(li);
-  }
-
-  if (entries.length === 0) {
-    const li = document.createElement("li");
-    li.className = "ui-muted px-2 py-2 text-xs";
-    li.textContent = t("emptyList");
-    ul.appendChild(li);
-  }
+function setTab(active, objectsBtn, libraryBtn, objectsPanel, libraryPanel) {
+  const objectsOn = active === "objects";
+  objectsBtn.setAttribute("aria-selected", objectsOn ? "true" : "false");
+  libraryBtn.setAttribute("aria-selected", objectsOn ? "false" : "true");
+  objectsPanel.hidden = !objectsOn;
+  libraryPanel.hidden = objectsOn;
 }
 
 export function mountBrowserPanel(container) {
@@ -54,13 +20,41 @@ export function mountBrowserPanel(container) {
   aside.className = "ui-panel flex w-60 shrink-0 flex-col border-r";
   aside.setAttribute("data-i18n-aria", "browserPanel");
 
+  const tabBar = document.createElement("div");
+  tabBar.className = "flex border-b border-[var(--line)] px-2 pt-2";
+  tabBar.setAttribute("role", "tablist");
+  tabBar.setAttribute("aria-label", t("browserPanel"));
+
+  const objectsBtn = document.createElement("button");
+  objectsBtn.type = "button";
+  objectsBtn.id = "browser-tab-objects-btn";
+  objectsBtn.className = TAB_BTN;
+  objectsBtn.setAttribute("role", "tab");
+  objectsBtn.setAttribute("aria-controls", "browser-tab-objects");
+  objectsBtn.setAttribute("data-i18n", "tabObjects");
+
+  const libraryBtn = document.createElement("button");
+  libraryBtn.type = "button";
+  libraryBtn.id = "browser-tab-library-btn";
+  libraryBtn.className = TAB_BTN;
+  libraryBtn.setAttribute("role", "tab");
+  libraryBtn.setAttribute("aria-controls", "browser-tab-library");
+  libraryBtn.setAttribute("data-i18n", "tabLibrary");
+
+  tabBar.append(objectsBtn, libraryBtn);
+
+  const objectsPanel = document.createElement("div");
+  objectsPanel.id = "browser-tab-objects";
+  objectsPanel.className = "flex min-h-0 flex-1 flex-col";
+  objectsPanel.setAttribute("role", "tabpanel");
+  objectsPanel.setAttribute("aria-labelledby", "browser-tab-objects-btn");
+
   const head = document.createElement("div");
   head.className = "border-b border-[var(--line)] px-3 py-2";
   const title = document.createElement("h2");
   title.className = "text-xs font-semibold";
   function updateTitle() {
-    const n = Object.keys(projectState.nodes).length;
-    title.textContent = t("objectsTitle", { n });
+    title.textContent = t("objectsTitle", { n: Object.keys(projectState.nodes).length });
   }
   updateTitle();
   head.appendChild(title);
@@ -78,24 +72,60 @@ export function mountBrowserPanel(container) {
   ul.className = "flex-1 overflow-y-auto p-2";
   ul.setAttribute("role", "list");
 
-  aside.append(head, filterWrap, ul);
+  objectsPanel.append(head, filterWrap, ul);
+
+  const libraryPanel = document.createElement("div");
+  const library = mountLibraryPanel(libraryPanel);
+
+  aside.append(tabBar, objectsPanel, libraryPanel);
   container.appendChild(aside);
 
-  let lastFilter = "";
-  const refresh = () => renderList(ul, lastFilter);
+  setTab("objects", objectsBtn, libraryBtn, objectsPanel, libraryPanel);
 
-  renderList(ul, "");
+  const activateObjects = () =>
+    setTab("objects", objectsBtn, libraryBtn, objectsPanel, libraryPanel);
+  const activateLibrary = () =>
+    setTab("library", objectsBtn, libraryBtn, objectsPanel, libraryPanel);
+
+  objectsBtn.addEventListener("click", activateObjects);
+  libraryBtn.addEventListener("click", activateLibrary);
+
+  const onTabKey = (event) => {
+    if (event.key === "ArrowRight") {
+      event.preventDefault();
+      activateLibrary();
+      libraryBtn.focus();
+    } else if (event.key === "ArrowLeft") {
+      event.preventDefault();
+      activateObjects();
+      objectsBtn.focus();
+    }
+  };
+  objectsBtn.addEventListener("keydown", onTabKey);
+  libraryBtn.addEventListener("keydown", onTabKey);
+
+  let lastFilter = "";
+  const refreshList = () => renderObjectList(ul, lastFilter);
+  renderObjectList(ul, "");
   filter.addEventListener("input", () => {
     lastFilter = filter.value;
-    refresh();
+    refreshList();
   });
+
+  const refreshChrome = () => {
+    updateTitle();
+    refreshList();
+    library.refreshLabels();
+    applyI18nDom(aside);
+    objectsBtn.textContent = t("tabObjects");
+    libraryBtn.textContent = t("tabLibrary");
+  };
+
   subscribe(() => {
     updateTitle();
-    refresh();
+    refreshList();
   });
-  subscribeSelection(refresh);
-  registerLocaleRefresh(() => {
-    updateTitle();
-    refresh();
-  });
+  subscribeSelection(refreshList);
+  registerLocaleRefresh(refreshChrome);
+  refreshChrome();
 }

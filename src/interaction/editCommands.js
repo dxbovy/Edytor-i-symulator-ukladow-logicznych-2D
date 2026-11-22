@@ -32,7 +32,7 @@ function clipFromNode(node) {
 }
 
 let idSeq = 0;
-function freshId(type) {
+export function freshId(type) {
   idSeq += 1;
   let id = `node_${type.toLowerCase()}_${idSeq}`;
   let n = 0;
