@@ -14,10 +14,10 @@ function gridBackgrounds(camera) {
   return {
     backgroundColor: "#f4f5f7",
     backgroundImage: [
-      "radial-gradient(circle at 0 0, #c4c7ce 1px, transparent 1px)",
       "radial-gradient(circle at 0 0, #8b919a 1.5px, transparent 1.6px)",
+      "radial-gradient(circle at 0 0, #c4c7ce 1px, transparent 1px)",
     ].join(", "),
-    backgroundSize: `${minorPx}px ${minorPx}px, ${majorPx}px ${majorPx}px`,
+    backgroundSize: `${majorPx}px ${majorPx}px, ${minorPx}px ${minorPx}px`,
     backgroundPosition: `${position}, ${position}`,
   };
 }
