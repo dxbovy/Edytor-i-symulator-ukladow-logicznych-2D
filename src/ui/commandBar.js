@@ -1,4 +1,9 @@
+import { fitToNodes, zoomBy } from "../canvas/camera.js";
+
 const LATER = "Funkcja dostępna w kolejnym kroku rozwoju.";
+
+const BTN_CLASS =
+  "rounded border border-gray-300 bg-white px-2 py-1 text-xs hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600";
 
 function disabledBtn(label, ariaLabel) {
   const b = document.createElement("button");
@@ -7,9 +12,30 @@ function disabledBtn(label, ariaLabel) {
   b.textContent = label;
   b.setAttribute("aria-label", ariaLabel);
   b.title = LATER;
-  b.className =
-    "rounded border border-gray-300 bg-white px-2 py-1 text-xs hover:bg-gray-50";
+  b.className = BTN_CLASS;
   return b;
+}
+
+function viewBtn(label, ariaLabel, title, onClick) {
+  const b = document.createElement("button");
+  b.type = "button";
+  b.textContent = label;
+  b.setAttribute("aria-label", ariaLabel);
+  b.title = title;
+  b.className = BTN_CLASS;
+  b.addEventListener("click", onClick);
+  return b;
+}
+
+function canvasCenter() {
+  const root = document.getElementById("canvas-root");
+  if (!root) return { x: 0, y: 0, w: 0, h: 0 };
+  return {
+    x: root.clientWidth / 2,
+    y: root.clientHeight / 2,
+    w: root.clientWidth,
+    h: root.clientHeight,
+  };
 }
 
 export function mountCommandBar(container) {
@@ -28,9 +54,18 @@ export function mountCommandBar(container) {
   viewGroup.setAttribute("role", "group");
   viewGroup.setAttribute("aria-label", "Widok");
   viewGroup.append(
-    disabledBtn("Dopasuj", "Dopasuj widok do zawartości"),
-    disabledBtn("Zoom +", "Powiększ"),
-    disabledBtn("Zoom −", "Pomniejsz")
+    viewBtn("Dopasuj", "Dopasuj widok do zawartości", "Dopasuj widok do zawartości", () => {
+      const { w, h } = canvasCenter();
+      fitToNodes(w, h);
+    }),
+    viewBtn("Zoom +", "Powiększenie o 10%", "Powiększenie o 10%", () => {
+      const { x, y } = canvasCenter();
+      zoomBy(x, y, 1.1);
+    }),
+    viewBtn("Zoom −", "Pomniejszenie o 10%", "Pomniejszenie o 10%", () => {
+      const { x, y } = canvasCenter();
+      zoomBy(x, y, 1 / 1.1);
+    })
   );
 
   const editGroup = document.createElement("div");
