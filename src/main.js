@@ -1,4 +1,5 @@
 import "./styles/main.css";
+import "./styles/help.css";
 import { mountCommandBar } from "./ui/commandBar.js";
 import { mountBrowserPanel } from "./ui/browserPanel.js";
 import { mountCanvasShell } from "./ui/canvasShell.js";

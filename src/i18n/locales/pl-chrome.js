@@ -38,4 +38,7 @@ export const plChrome = {
   rotateHandleAria: "Obróć o 90 stopni",
   scaleHandleAria: "Skaluj zaznaczenie",
   scaleHandleTitle: "Skaluj zaznaczenie",
+  helpTitle: "Pomoc",
+  helpAria: "Pomoc",
+  pan: "Przesuwanie",
 };

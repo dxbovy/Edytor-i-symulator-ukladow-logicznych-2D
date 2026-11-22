@@ -38,4 +38,7 @@ export const enChrome = {
   rotateHandleAria: "Rotate 90°",
   scaleHandleAria: "Scale selection",
   scaleHandleTitle: "Scale selection",
+  helpTitle: "Help",
+  helpAria: "Help",
+  pan: "Pan",
 };

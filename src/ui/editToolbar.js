@@ -12,11 +12,10 @@ import { registerLocaleRefresh, t } from "../i18n/i18n.js";
 
 const BTN_CLASS = "ui-btn disabled:cursor-not-allowed disabled:opacity-50";
 
-function cmdBtn(labelKey, shortcut) {
+function cmdBtn(labelKey) {
   const b = document.createElement("button");
   b.type = "button";
   b.setAttribute("data-i18n", labelKey);
-  b.setAttribute("data-i18n-suffix", shortcut);
   b.setAttribute("data-i18n-aria", labelKey);
   b.className = BTN_CLASS;
   return b;
@@ -29,15 +28,13 @@ export function mountEditToolbar() {
   editGroup.setAttribute("role", "group");
   editGroup.setAttribute("data-i18n-aria", "groupEdit");
 
-  const undoBtn = cmdBtn("undo", " Ctrl+Z");
-  const redoBtn = cmdBtn("redo", " Ctrl+Shift+Z");
-  const copyBtn = cmdBtn("copy", " Ctrl+C");
-  const pasteBtn = cmdBtn("paste", " Ctrl+V");
-  const delBtn = cmdBtn("delete", " Delete");
-  const rotateBtn = cmdBtn("rotateLabel", "");
+  const undoBtn = cmdBtn("undo");
+  const redoBtn = cmdBtn("redo");
+  const copyBtn = cmdBtn("copy");
+  const pasteBtn = cmdBtn("paste");
+  const delBtn = cmdBtn("delete");
+  const rotateBtn = cmdBtn("rotateLabel");
   rotateBtn.id = "rotate-90-btn";
-  rotateBtn.removeAttribute("data-i18n-suffix");
-  rotateBtn.removeAttribute("data-i18n-aria");
   rotateBtn.setAttribute("data-i18n-aria", "rotateSelectionAria");
 
   undoBtn.addEventListener("click", () => undo());

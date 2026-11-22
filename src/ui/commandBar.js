@@ -1,5 +1,6 @@
 import { fitToNodes, zoomBy } from "../canvas/camera.js";
 import { mountEditToolbar } from "./editToolbar.js";
+import { mountHelpPanel } from "./helpPanel.js";
 
 const BTN_CLASS = "ui-btn";
 
@@ -48,7 +49,7 @@ function canvasCenter() {
 export function mountCommandBar(container) {
   const bar = document.createElement("header");
   bar.className =
-    "ui-chrome-bar flex h-10 shrink-0 items-center gap-2 border-b px-3";
+    "ui-chrome-bar relative flex h-10 shrink-0 items-center gap-2 border-b px-3";
   bar.setAttribute("role", "toolbar");
   bar.setAttribute("data-i18n-aria", "commandBar");
 
@@ -93,6 +94,9 @@ export function mountCommandBar(container) {
     langBtn("PL", "langPlAria", "pl"),
     langBtn("EN", "langEnAria", "en")
   );
+
+  const helpBtn = mountHelpPanel(bar);
+  langGroup.appendChild(helpBtn);
 
   bar.append(brand, viewGroup, mountEditToolbar(), themeGroup, langGroup);
   container.appendChild(bar);

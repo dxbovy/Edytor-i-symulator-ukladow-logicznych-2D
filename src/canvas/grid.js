@@ -14,8 +14,8 @@ function gridBackgrounds(camera) {
   return {
     backgroundColor: "var(--canvas-bg)",
     backgroundImage: [
-      "radial-gradient(circle at 0 0, var(--grid-major) 1.5px, transparent 1.6px)",
-      "radial-gradient(circle at 0 0, var(--grid) 1px, transparent 1px)",
+      "radial-gradient(circle at 0 0, var(--grid-major) 2.5px, transparent 2.8px)",
+      "radial-gradient(circle at 0 0, var(--grid) 1.75px, transparent 2px)",
     ].join(", "),
     backgroundSize: `${majorPx}px ${majorPx}px, ${minorPx}px ${minorPx}px`,
     backgroundPosition: `${position}, ${position}`,

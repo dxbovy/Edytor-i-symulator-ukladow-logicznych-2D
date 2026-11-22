@@ -1,6 +1,7 @@
 /** @type {Record<string, { w: number, h: number }>} */
 export const NODE_SIZES = {
   AND: { w: 80, h: 50 },
+  OR: { w: 80, h: 50 },
   NOT: { w: 60, h: 40 },
   INPUT: { w: 48, h: 32 },
 };
