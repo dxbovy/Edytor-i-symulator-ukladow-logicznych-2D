@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edytor układów logicznych 2D</title>
+    <script>
+      (function () {
+        var t = "light", l = "pl";
+        try {
+          var o = JSON.parse(localStorage.getItem("ui-preferences") || "{}");
+          if (o.theme === "dark" || o.theme === "high-contrast") t = o.theme;
+          if (o.locale === "en" || o.locale === "pl") l = o.locale;
+        } catch (e) {}
+        document.documentElement.dataset.theme = t;
+        document.documentElement.lang = l;
+      })();
+    </script>
+  </head>
+  <body class="ui-app m-0 h-screen overflow-hidden text-sm">
+    <div id="app" class="flex h-full flex-col"></div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
