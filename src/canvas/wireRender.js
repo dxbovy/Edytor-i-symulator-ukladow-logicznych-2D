@@ -10,6 +10,13 @@ import {
 const NS = "http://www.w3.org/2000/svg";
 const WIRE_STROKE = "#000000";
 
+/** 1 = zielony, 0 = kolor konturu (zależny od motywu), brak sygnału = szary */
+function wireStroke(state) {
+  if (state === 1) return "var(--wire-on)";
+  if (state === 0) return "var(--node-stroke)";
+  return "var(--wire-unknown)";
+}
+
 /** @type {{ fromNode: string, fromPin: string, x: number, y: number, toNode?: string, toPin?: string } | null} */
 let dragPreview = null;
 
@@ -54,13 +61,11 @@ function previewPath(fromNode, fromPin, tx, ty, toNode, toPin) {
 function renderWires() {
   if (!layer) return;
   layer.replaceChildren();
-  for (const wire of Object.values(projectState.wires)) {
-    if (
-      !projectState.nodes[wire.fromNode] ||
-      !projectState.nodes[wire.toNode]
-    ) {
-      continue;
-    }
+   // Kable ze stanem 1 rysujemy na wierzchu, żeby zieleń nie była zasłaniana
+  const wires = Object.values(projectState.wires)
+    .filter((w) => projectState.nodes[w.fromNode] && projectState.nodes[w.toNode])
+    .sort((p, q) => (p.state === 1) - (q.state === 1));
+  for (const wire of wires) {
     const a = getPinWorldPosition(wire.fromNode, wire.fromPin);
     const b = getPinWorldPosition(wire.toNode, wire.toPin);
     layer.appendChild(
@@ -74,7 +79,7 @@ function renderWires() {
           wire.toNode
         ),
         fill: "none",
-        stroke: WIRE_STROKE,
+        stroke: wireStroke(wire.state),
         "stroke-width": "2",
         "stroke-linecap": "round",
         "stroke-linejoin": "round",
