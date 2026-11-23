@@ -1,4 +1,4 @@
-import { filledPath, hookIn, hookOut, symbolLabel } from "./glyphSvg.js";
+import { filledPath, hookIn, hookOut } from "./glyphSvg.js";
 
 const BACK_X_22 = 22.4;
 const BACK_X_38 = 22.4;
@@ -14,5 +14,4 @@ export function drawOr(svg) {
     )
   );
   hookOut(svg, 74, 30);
-  symbolLabel(svg, "OR", 44, 52);
 }

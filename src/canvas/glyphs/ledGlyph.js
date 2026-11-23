@@ -1,4 +1,4 @@
-import { el, filledPath, hookIn, STROKE, SW, symbolLabel } from "./glyphSvg.js";
+import { el, filledPath, hookIn, STROKE, SW } from "./glyphSvg.js";
 
 const TIP_X = 44;
 const MID_Y = 26;
@@ -32,5 +32,4 @@ export function drawLed(svg) {
     });
   svg.appendChild(ray("M 56 10 L 64 4"));
   svg.appendChild(ray("M 62 22 L 72 22"));
-  symbolLabel(svg, "LED", 46, 46);
 }

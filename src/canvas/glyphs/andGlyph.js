@@ -1,4 +1,4 @@
-import { filledPath, hookIn, hookOut, symbolLabel } from "./glyphSvg.js";
+import { filledPath, hookIn, hookOut } from "./glyphSvg.js";
 
 /** @param {SVGElement} svg */
 export function drawAnd(svg) {
@@ -9,5 +9,4 @@ export function drawAnd(svg) {
     filledPath("M 18 12 L 18 48 L 40 48 C 66 48 66 12 40 12 Z")
   );
   hookOut(svg, 60, 30);
-  symbolLabel(svg, "AND", 44, 52);
 }

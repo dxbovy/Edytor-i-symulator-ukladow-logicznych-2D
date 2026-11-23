@@ -35,7 +35,7 @@ export const enChrome = {
   tabObjects: "Objects",
   tabLibrary: "Library",
   libraryTitle: "Add component",
-  addInput: "INPUT",
+  addInput: "Input",
   addSwitch: "Switch",
   addLed: "LED",
   addOutput: "Output",

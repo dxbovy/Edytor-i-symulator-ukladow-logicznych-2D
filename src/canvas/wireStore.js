@@ -35,6 +35,14 @@ export function syncWiresFromNode(nodeId) {
 }
 
 /** Kopiuje stan kabli na wejścia docelowych węzłów (OUTPUT, LED, …). */
+/** @param {string} nodeId @param {string} pin */
+export function findWireAtInput(nodeId, pin) {
+  for (const [id, w] of Object.entries(projectState.wires)) {
+    if (w.toNode === nodeId && w.toPin === pin) return { id, wire: w };
+  }
+  return null;
+}
+
 export function syncWireInputs() {
   for (const [nodeId, node] of Object.entries(projectState.nodes)) {
     for (const pin of Object.keys(node.inputStates)) {

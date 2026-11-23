@@ -1,4 +1,4 @@
-import { el, filledPath, hookIn, hookOut, STROKE, SW, symbolLabel } from "./glyphSvg.js";
+import { el, filledPath, hookIn, hookOut, STROKE, SW } from "./glyphSvg.js";
 
 const BACK_X_22 = 24.4;
 const BACK_X_38 = 24.4;
@@ -23,5 +23,4 @@ export function drawXor(svg) {
     )
   );
   hookOut(svg, 76, 30);
-  symbolLabel(svg, "XOR", 46, 52);
 }

@@ -1,5 +1,6 @@
 import { projectState, notify } from "../../state/projectState.js";
 import { syncWiresFromNode } from "../wireStore.js";
+import { HOOK_OUT_SVG } from "../pinHookSvg.js";
 
 /** @param {HTMLElement} box @param {boolean} on */
 function paintToggle(box, on) {
@@ -32,9 +33,7 @@ export function createInputWidget(el, node, id) {
             <span class="input-switch-knob" data-input-knob></span>
           </span>
         </button>
-        <span class="pin-hook pin-hook--out" data-pin-out aria-hidden="true">
-          <svg width="8" height="10" viewBox="0 0 8 10" aria-hidden="true"><path d="M0 0 L8 5 L0 10" fill="none" stroke="#000" stroke-width="2" stroke-linejoin="round"/></svg>
-        </span>
+        <span class="pin-hook pin-hook--out" data-pin-out aria-hidden="true">${HOOK_OUT_SVG}</span>
       </div>`;
     el.replaceChildren(slot);
     const toggle = slot.querySelector("[data-input-toggle]");

@@ -1,6 +1,7 @@
 export const FILL = "#ffffff";
 export const STROKE = "#000000";
 export const SW = 2;
+export const HOOK = 7;
 
 /** @param {string} name @param {Record<string, string>} attrs */
 export function el(name, attrs = {}) {
@@ -39,12 +40,13 @@ export function symbolLabel(root, text, cx, y, size = 11) {
   root.appendChild(t);
 }
 
-/** Wejście na lewej krawędzi (hak Simulink / MATLAB). */
+/** Port wejściowy „>” (Simulink / MATLAB, otwarty chevron). */
 /** @param {SVGElement} root */
 export function hookIn(root, x, y) {
+  const h = 5;
   root.appendChild(
     el("path", {
-      d: `M ${x} ${y - 5} L ${x + 8} ${y} L ${x} ${y + 5}`,
+      d: `M ${x} ${y - h} L ${x + HOOK} ${y} M ${x} ${y + h} L ${x + HOOK} ${y}`,
       fill: "none",
       stroke: STROKE,
       "stroke-width": String(SW),
@@ -54,12 +56,13 @@ export function hookIn(root, x, y) {
   );
 }
 
-/** Wyjście na prawej krawędzi. */
+/** Port wyjściowy „>” na krawędzi symbolu. */
 /** @param {SVGElement} root */
 export function hookOut(root, x, y) {
+  const h = 5;
   root.appendChild(
     el("path", {
-      d: `M ${x - 8} ${y - 5} L ${x} ${y} L ${x - 8} ${y + 5}`,
+      d: `M ${x - HOOK} ${y - h} L ${x} ${y} M ${x - HOOK} ${y + h} L ${x} ${y}`,
       fill: "none",
       stroke: STROKE,
       "stroke-width": String(SW),

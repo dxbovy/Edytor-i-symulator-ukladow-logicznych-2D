@@ -89,12 +89,12 @@ export function addComponent(type) {
 }
 
 export const PLACEABLE_TYPES = [
+  "INPUT",
+  "OUTPUT",
   "AND",
   "OR",
   "NOT",
   "XOR",
   "DFF",
-  "INPUT",
   "LED",
-  "OUTPUT",
 ];

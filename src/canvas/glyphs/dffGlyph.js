@@ -1,4 +1,4 @@
-import { el, FILL, hookIn, hookOut, STROKE, SW, symbolLabel } from "./glyphSvg.js";
+import { el, FILL, hookIn, hookOut, STROKE, SW } from "./glyphSvg.js";
 
 const BODY_LEFT = 22;
 const CLK_Y = 38;
@@ -38,5 +38,4 @@ export function drawDff(svg) {
       stroke: "none",
     })
   );
-  symbolLabel(svg, "DFF", 48, 54);
 }

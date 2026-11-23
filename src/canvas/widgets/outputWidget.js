@@ -1,3 +1,5 @@
+import { HOOK_IN_SVG } from "../pinHookSvg.js";
+
 /** @param {HTMLElement} box @param {0 | 1 | null} signal */
 function paintOutput(box, signal) {
   box.dataset.powered = signal === 1 ? "1" : "0";
@@ -15,10 +17,7 @@ export function createOutputWidget(el, node) {
     slot.className = "flex h-full w-full items-center justify-center";
     slot.innerHTML = `
       <div class="input-switch-box output-switch-box" data-output-box>
-        <span class="pin-hook pin-hook--in" data-pin-in aria-hidden="true">
-          <svg width="8" height="10" viewBox="0 0 8 10" aria-hidden="true"><path d="M8 0 L0 5 L8 10" fill="none" stroke="#000" stroke-width="2" stroke-linejoin="round"/></svg>
-        </span>
-        <span class="output-switch-label">OUTPUT</span>
+        <span class="pin-hook pin-hook--in" data-pin-in aria-hidden="true">${HOOK_IN_SVG}</span>
       </div>`;
     el.replaceChildren(slot);
   }

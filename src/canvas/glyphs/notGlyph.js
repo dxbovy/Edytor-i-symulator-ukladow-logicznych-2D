@@ -1,4 +1,4 @@
-import { el, filledPath, FILL, hookIn, hookOut, STROKE, SW, symbolLabel } from "./glyphSvg.js";
+import { el, filledPath, FILL, hookIn, hookOut, STROKE, SW } from "./glyphSvg.js";
 
 const TIP_X = 40;
 const TIP_Y = 26;
@@ -22,5 +22,4 @@ export function drawNot(svg) {
     })
   );
   hookOut(svg, BUBBLE_OUT_X, TIP_Y);
-  symbolLabel(svg, "NOT", 36, 46);
 }
