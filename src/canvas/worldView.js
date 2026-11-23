@@ -89,7 +89,7 @@ function setGlyph(rotator, id, node) {
     slot.className = "h-full w-full overflow-visible";
     rotator.appendChild(slot);
   }
-  const ver = "sim3";
+  const ver = "ports1";
   if (slot.dataset.nodeType === type && slot.dataset.glyphVer === ver) return;
   slot.dataset.nodeType = type;
   slot.dataset.glyphVer = ver;

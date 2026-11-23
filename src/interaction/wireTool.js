@@ -4,6 +4,7 @@ import { isViewPan } from "../canvas/cameraInput.js";
 import { push } from "../history/history.js";
 import { getPinWorldPosition } from "../canvas/pinPositions.js";
 import { setWireDragPreview } from "../canvas/wireRender.js";
+import { setHoveredInputPin } from "../canvas/portRender.js";
 import {
   findWireAtInput,
   syncWireInputs,
@@ -83,6 +84,7 @@ export function initWireTool() {
   const endDrag = () => {
     drag = null;
     setWireDragPreview(null);
+    setHoveredInputPin(null);
   };
 
   root.addEventListener(
@@ -123,10 +125,21 @@ export function initWireTool() {
   );
 
   root.addEventListener("pointermove", (event) => {
-    if (!drag || event.pointerId !== drag.pointerId) return;
     const screen = screenFrom(event);
     const world = screenToWorld(screen.x, screen.y, projectState.camera);
-    setWireDragPreview({ ...drag, x: world.x, y: world.y });
+    const near = hitPin(world.x, world.y);
+    if (near?.dir === "in" && IN_PINS.has(near.pin)) {
+      setHoveredInputPin({ nodeId: near.nodeId, pin: near.pin });
+    } else {
+      setHoveredInputPin(null);
+    }
+    if (!drag || event.pointerId !== drag.pointerId) return;
+    const preview = { ...drag, x: world.x, y: world.y };
+    if (near?.dir === "in" && IN_PINS.has(near.pin)) {
+      preview.toNode = near.nodeId;
+      preview.toPin = near.pin;
+    }
+    setWireDragPreview(preview);
   });
 
   const finish = (event) => {

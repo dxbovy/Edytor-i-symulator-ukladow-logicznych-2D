@@ -1,4 +1,4 @@
-import { el, filledPath, hookIn, hookOut, SW } from "./glyphSvg.js";
+import { el, filledPath, SW } from "./glyphSvg.js";
 
 const TIP_X = 40;
 const TIP_Y = 26;
@@ -21,6 +21,4 @@ export function drawNot(svg) {
       "stroke-width": String(SW),
     })
   );
-  hookIn(svg, LEFT, TIP_Y);
-  hookOut(svg, BUBBLE_OUT_X, TIP_Y);
 }

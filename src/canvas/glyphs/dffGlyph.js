@@ -1,4 +1,4 @@
-import { el, hookIn, hookOut, SW } from "./glyphSvg.js";
+import { el, SW } from "./glyphSvg.js";
 
 const BODY_LEFT = 22;
 const BODY_W = 52;
@@ -39,7 +39,4 @@ export function drawDff(svg) {
       stroke: "none",
     })
   );
-  hookIn(svg, BODY_LEFT, 22);
-  hookIn(svg, BODY_LEFT, CLK_Y);
-  hookOut(svg, OUT_X, 30);
 }
