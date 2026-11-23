@@ -32,23 +32,18 @@ function applyWorldTransform(world) {
   world.style.transform = worldTransformString(projectState.camera);
 }
 
-/** Etykieta pod bloczkiem — bez obrotu, przesuwa się z „dolną” krawędzią. */
+/** Etykieta pod osiowym bbox po obrocie — zawsze poziomo, wyśrodkowana. */
 function layoutNodeLabel(el, node, w, h) {
   const label = el.querySelector("[data-node-label]");
   if (!label) return;
-  const s = node.scale ?? 1;
-  const rad = (node.rotation * Math.PI) / 180;
-  const sin = Math.sin(rad);
-  const cos = Math.cos(rad);
-  const vx = 0;
-  const vy = (h / 2) * s;
-  const rx = vx * cos - vy * sin;
-  const ry = vx * sin + vy * cos;
-  const margin = 10;
-  const ax = w / 2 + rx + sin * margin;
-  const ay = h / 2 + ry + cos * margin;
-  label.style.left = `${ax}px`;
-  label.style.top = `${ay}px`;
+  const scale = node.scale ?? 1;
+  const angle = ((node.rotation % 360) + 360) % 360;
+  const rotatedHeight = angle % 180 === 0 ? h * scale : w * scale;
+  const cx = w / 2;
+  const cy = h / 2;
+  label.style.left = `${cx}px`;
+  label.style.top = `${cy + rotatedHeight / 2 + 8}px`;
+  label.style.transform = "translateX(-50%)";
   label.textContent = NODE_LABELS[node.type] ?? node.type;
 }
 
@@ -91,11 +86,13 @@ function setGlyph(rotator, id, node) {
     rotator.replaceChildren();
     slot = document.createElement("div");
     slot.dataset.gateGlyph = "1";
-    slot.className = "h-full w-full";
+    slot.className = "h-full w-full overflow-visible";
     rotator.appendChild(slot);
   }
-  if (slot.dataset.nodeType === type) return;
+  const ver = "sim2";
+  if (slot.dataset.nodeType === type && slot.dataset.glyphVer === ver) return;
   slot.dataset.nodeType = type;
+  slot.dataset.glyphVer = ver;
   slot.replaceChildren(createGateGlyph(type));
 }
 
@@ -103,13 +100,13 @@ function createNodeEl(id, node) {
   const { w, h } = nodeSizeFor(node.type);
   const el = document.createElement("div");
   el.dataset.nodeId = id;
-  el.className = "ui-node absolute box-border";
+  el.className = "ui-node absolute box-border overflow-visible";
   el.style.width = `${w}px`;
   el.style.height = `${h}px`;
 
   const rotator = document.createElement("div");
   rotator.dataset.nodeRotator = "1";
-  rotator.className = "absolute inset-0";
+  rotator.className = "absolute inset-0 overflow-visible";
 
   const label = document.createElement("span");
   label.dataset.nodeLabel = "1";

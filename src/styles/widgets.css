@@ -5,10 +5,10 @@
   justify-content: center;
   width: 56px;
   height: 56px;
-  border: 2px solid #000;
+  border: 2px solid var(--node-stroke);
   border-radius: 2px;
-  background: #e8eaed;
-  box-shadow: 1px 2px 3px rgb(0 0 0 / 12%);
+  background: var(--node-bg);
+  box-shadow: 0 2px 6px rgb(0 0 0 / 18%);
   transition:
     background 0.15s ease,
     box-shadow 0.15s ease;
@@ -16,21 +16,13 @@
 
 .input-switch-box[data-powered="1"] {
   background: #f5c542;
-  box-shadow: 0 2px 4px rgb(15 23 42 / 18%);
+  box-shadow: 0 2px 6px rgb(15 23 42 / 22%);
 }
 
 .output-switch-box {
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.output-switch-label {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  color: #334155;
-  user-select: none;
 }
 
 .input-switch-toggle {
@@ -101,9 +93,11 @@
 }
 
 .pin-hook--in {
-  left: -2px;
+  left: 0;
+  transform: translateX(-100%);
 }
 
 .pin-hook--out {
-  right: -2px;
+  right: 0;
+  transform: translateX(100%);
 }

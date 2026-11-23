@@ -1,13 +1,13 @@
-import { el, filledPath, hookIn, STROKE, SW } from "./glyphSvg.js";
+import { el, filledPath, hookIn, SW } from "./glyphSvg.js";
 
 const TIP_X = 44;
 const MID_Y = 26;
+const LEFT = 14;
 const BAR_X = TIP_X;
 
 /** @param {SVGElement} svg */
 export function drawLed(svg) {
   svg.setAttribute("viewBox", "0 0 92 58");
-  hookIn(svg, 0, MID_Y);
   svg.appendChild(
     filledPath(`M 14 12 L 14 40 L ${TIP_X} ${MID_Y} Z`)
   );
@@ -17,7 +17,7 @@ export function drawLed(svg) {
       y1: "14",
       x2: String(BAR_X),
       y2: "38",
-      stroke: STROKE,
+      stroke: "var(--node-stroke)",
       "stroke-width": String(SW),
       "stroke-linecap": "round",
     })
@@ -26,10 +26,11 @@ export function drawLed(svg) {
     el("path", {
       d,
       fill: "none",
-      stroke: STROKE,
+      stroke: "var(--node-stroke)",
       "stroke-width": "1.5",
       "stroke-linecap": "round",
     });
   svg.appendChild(ray("M 56 10 L 64 4"));
   svg.appendChild(ray("M 62 22 L 72 22"));
+  hookIn(svg, LEFT, MID_Y);
 }

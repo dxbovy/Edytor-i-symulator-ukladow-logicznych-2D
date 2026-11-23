@@ -3,19 +3,21 @@ import { nodeSizeFor } from "./nodeSizes.js";
 
 const WIDGET_BOX = 56;
 const WIDGET_INSET_X = (80 - WIDGET_BOX) / 2;
-const WIDGET_INSET_Y = (58 - WIDGET_BOX) / 2;
-const WIDGET_MID_Y = WIDGET_INSET_Y + WIDGET_BOX / 2;
+const WIDGET_MID_Y = (58 - WIDGET_BOX) / 2 + WIDGET_BOX / 2;
+const WIDGET_LEFT = WIDGET_INSET_X;
+const WIDGET_RIGHT = WIDGET_INSET_X + WIDGET_BOX;
 
+/** Pinów na wierzchołku chevrona „>” (bodyEdgeX, y). */
 /** @type {Record<string, Record<string, { x: number, y: number }>>} */
 const PIN_LOCAL = {
-  AND: { in_A: { x: 0, y: 22 }, in_B: { x: 0, y: 38 }, out_Q: { x: 60, y: 30 } },
-  OR: { in_A: { x: 0, y: 22 }, in_B: { x: 0, y: 38 }, out_Q: { x: 74, y: 30 } },
-  XOR: { in_A: { x: 0, y: 22 }, in_B: { x: 0, y: 38 }, out_Q: { x: 76, y: 30 } },
-  NOT: { in_A: { x: 0, y: 26 }, out_Q: { x: 49, y: 26 } },
-  DFF: { in_D: { x: 0, y: 22 }, in_CLK: { x: 0, y: 38 }, out_Q: { x: 74, y: 30 } },
-  LED: { in_A: { x: 0, y: 26 } },
-  INPUT: { out: { x: WIDGET_INSET_X + WIDGET_BOX, y: WIDGET_MID_Y } },
-  OUTPUT: { in: { x: WIDGET_INSET_X, y: WIDGET_MID_Y } },
+  AND: { in_A: { x: 18, y: 22 }, in_B: { x: 18, y: 38 }, out_Q: { x: 60, y: 30 } },
+  OR: { in_A: { x: 14, y: 22 }, in_B: { x: 14, y: 38 }, out_Q: { x: 74, y: 30 } },
+  XOR: { in_A: { x: 16, y: 22 }, in_B: { x: 16, y: 38 }, out_Q: { x: 76, y: 30 } },
+  NOT: { in_A: { x: 8, y: 26 }, out_Q: { x: 49, y: 26 } },
+  DFF: { in_D: { x: 22, y: 22 }, in_CLK: { x: 22, y: 38 }, out_Q: { x: 74, y: 30 } },
+  LED: { in_A: { x: 14, y: 26 } },
+  INPUT: { out: { x: WIDGET_RIGHT, y: WIDGET_MID_Y } },
+  OUTPUT: { in: { x: WIDGET_LEFT, y: WIDGET_MID_Y } },
 };
 
 /** @param {import("../state/projectState.js").projectState["nodes"][string]} node @param {string} pinName */

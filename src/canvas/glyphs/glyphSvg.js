@@ -1,5 +1,3 @@
-export const FILL = "#ffffff";
-export const STROKE = "#000000";
 export const SW = 2;
 export const HOOK = 7;
 
@@ -16,57 +14,42 @@ export function createSvgRoot() {
     height: "100%",
     overflow: "visible",
     "pointer-events": "none",
+    class: "gate-glyph-svg",
   });
   svg.style.display = "block";
-  svg.style.filter = "drop-shadow(1px 2px 2px rgb(0 0 0 / 12%))";
+  svg.style.overflow = "visible";
+  svg.style.filter = "drop-shadow(0 2px 6px rgb(0 0 0 / 18%))";
   return svg;
 }
 
 /** @param {SVGElement} root */
-export function symbolLabel(root, text, cx, y, size = 11) {
-  const t = el("text", {
-    x: String(cx),
-    y: String(y),
-    fill: STROKE,
-    "font-weight": "600",
-    "font-family": "system-ui, sans-serif",
-    "font-size": String(size),
-    "text-anchor": "middle",
-    "dominant-baseline": "hanging",
-    "pointer-events": "none",
-    style: "user-select: none",
-  });
-  t.textContent = text;
-  root.appendChild(t);
-}
-
-/** Port wejściowy „>” (Simulink / MATLAB, otwarty chevron). */
-/** @param {SVGElement} root */
-export function hookIn(root, x, y) {
+export function hookIn(root, bodyEdgeX, y) {
   const h = 5;
+  const x = bodyEdgeX - HOOK;
   root.appendChild(
     el("path", {
-      d: `M ${x} ${y - h} L ${x + HOOK} ${y} M ${x} ${y + h} L ${x + HOOK} ${y}`,
+      d: `M ${x} ${y - h} L ${bodyEdgeX} ${y} M ${x} ${y + h} L ${bodyEdgeX} ${y}`,
       fill: "none",
-      stroke: STROKE,
+      stroke: "var(--node-stroke)",
       "stroke-width": String(SW),
-      "stroke-linejoin": "round",
+      "stroke-linejoin": "miter",
       "stroke-linecap": "round",
     })
   );
 }
 
-/** Port wyjściowy „>” na krawędzi symbolu. */
 /** @param {SVGElement} root */
-export function hookOut(root, x, y) {
+export function hookOut(root, bodyEdgeX, y) {
   const h = 5;
+  const x = bodyEdgeX;
+  const wing = bodyEdgeX - HOOK;
   root.appendChild(
     el("path", {
-      d: `M ${x - HOOK} ${y - h} L ${x} ${y} M ${x - HOOK} ${y + h} L ${x} ${y}`,
+      d: `M ${wing} ${y - h} L ${x} ${y} M ${wing} ${y + h} L ${x} ${y}`,
       fill: "none",
-      stroke: STROKE,
+      stroke: "var(--node-stroke)",
       "stroke-width": String(SW),
-      "stroke-linejoin": "round",
+      "stroke-linejoin": "miter",
       "stroke-linecap": "round",
     })
   );
@@ -76,8 +59,8 @@ export function hookOut(root, x, y) {
 export function filledPath(d) {
   return el("path", {
     d,
-    fill: FILL,
-    stroke: STROKE,
+    fill: "var(--node-bg)",
+    stroke: "var(--node-stroke)",
     "stroke-width": String(SW),
     "stroke-linejoin": "round",
     "stroke-linecap": "round",
