@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "./widgets.css";
 
 :root,
 [data-theme="light"] {
@@ -97,6 +98,16 @@
 .ui-theme-btn[aria-pressed="true"] {
   outline: 2px solid var(--selection);
   outline-offset: 1px;
+}
+
+.ui-icon-btn {
+  min-width: 2rem;
+  min-height: 2rem;
+  padding: 0.25rem;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .ui-field {

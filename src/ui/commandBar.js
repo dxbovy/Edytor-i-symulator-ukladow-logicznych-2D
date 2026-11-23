@@ -4,23 +4,25 @@ import { mountHelpPanel } from "./helpPanel.js";
 
 const BTN_CLASS = "ui-btn";
 
-function langBtn(label, ariaKey, localeId) {
+function langBtn(icon, ariaKey, localeId) {
   const b = document.createElement("button");
   b.type = "button";
-  b.textContent = label;
+  b.textContent = icon;
   b.dataset.localeToggle = localeId;
   b.setAttribute("data-i18n-aria", ariaKey);
-  b.className = BTN_CLASS;
+  b.setAttribute("data-i18n-title", ariaKey);
+  b.className = "ui-btn ui-icon-btn";
   return b;
 }
 
-function themeBtn(labelKey, ariaKey, themeId) {
+function themeBtn(icon, ariaKey, themeId) {
   const b = document.createElement("button");
   b.type = "button";
+  b.textContent = icon;
   b.dataset.themeToggle = themeId;
-  b.setAttribute("data-i18n", labelKey);
   b.setAttribute("data-i18n-aria", ariaKey);
-  b.className = "ui-btn ui-theme-btn";
+  b.setAttribute("data-i18n-title", ariaKey);
+  b.className = "ui-btn ui-theme-btn ui-icon-btn";
   return b;
 }
 
@@ -81,9 +83,9 @@ export function mountCommandBar(container) {
   themeGroup.setAttribute("role", "group");
   themeGroup.setAttribute("data-i18n-aria", "groupTheme");
   themeGroup.append(
-    themeBtn("themeLight", "themeLightAria", "light"),
-    themeBtn("themeDark", "themeDarkAria", "dark"),
-    themeBtn("themeHighContrast", "themeHighContrastAria", "high-contrast")
+    themeBtn("☀", "themeLightAria", "light"),
+    themeBtn("☽", "themeDarkAria", "dark"),
+    themeBtn("◐", "themeHighContrastAria", "high-contrast")
   );
 
   const langGroup = document.createElement("div");
@@ -91,8 +93,8 @@ export function mountCommandBar(container) {
   langGroup.setAttribute("role", "group");
   langGroup.setAttribute("data-i18n-aria", "groupLanguage");
   langGroup.append(
-    langBtn("PL", "langPlAria", "pl"),
-    langBtn("EN", "langEnAria", "en")
+    langBtn("🇵🇱", "langPlAria", "pl"),
+    langBtn("🇬🇧", "langEnAria", "en")
   );
 
   const helpBtn = mountHelpPanel(bar);

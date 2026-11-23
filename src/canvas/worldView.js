@@ -1,6 +1,8 @@
 import { projectState, subscribe } from "../state/projectState.js";
 import { nodeSizeFor } from "./nodeSizes.js";
 import { createGateGlyph } from "./gateGlyph.js";
+import { createInputWidget } from "./widgets/inputWidget.js";
+import { createOutputWidget } from "./widgets/outputWidget.js";
 import {
   isSelected,
   subscribeSelection,
@@ -35,9 +37,19 @@ function styleNodeEl(el, id, node) {
   }
 }
 
-function setGlyph(el, type) {
+function setGlyph(el, id, node) {
+  const { type } = node;
+  if (type === "INPUT") {
+    createInputWidget(el, node, id);
+    return;
+  }
+  if (type === "OUTPUT") {
+    createOutputWidget(el, node);
+    return;
+  }
   let slot = el.querySelector("[data-gate-glyph]");
   if (!slot) {
+    el.replaceChildren();
     slot = document.createElement("div");
     slot.dataset.gateGlyph = "1";
     slot.className = "h-full w-full";
@@ -55,7 +67,7 @@ function createNodeEl(id, node) {
   el.className = "ui-node absolute box-border";
   el.style.width = `${w}px`;
   el.style.height = `${h}px`;
-  setGlyph(el, node.type);
+  setGlyph(el, id, node);
   styleNodeEl(el, id, node);
   return el;
 }
@@ -78,7 +90,7 @@ function syncNodeLayout(world) {
   for (const [id, node] of Object.entries(projectState.nodes)) {
     const el = world.querySelector(`[data-node-id="${id}"]`);
     if (!el) continue;
-    setGlyph(el, node.type);
+    setGlyph(el, id, node);
     styleNodeEl(el, id, node);
   }
 }

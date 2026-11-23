@@ -7,6 +7,7 @@ export const NODE_SIZES = {
   DFF: { w: 96, h: 68 },
   INPUT: { w: 80, h: 58 },
   LED: { w: 92, h: 58 },
+  OUTPUT: { w: 80, h: 58 },
 };
 
 export const DEFAULT_NODE_SIZE = { w: 72, h: 48 };

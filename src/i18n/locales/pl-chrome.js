@@ -35,6 +35,7 @@ export const plChrome = {
   libraryTitle: "Dodaj komponent",
   addSwitch: "Przełącznik",
   addLed: "Dioda LED",
+  addOutput: "Wyjście",
   addComponentAria: "Dodaj: {type}",
   filterPlaceholder: "Filtruj po nazwie lub typie",
   filterAria: "Filtruj listę obiektów",

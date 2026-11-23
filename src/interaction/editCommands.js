@@ -16,6 +16,7 @@ import {
 } from "../clipboard/clipboard.js";
 import { getSelectedIds, selectMany } from "./selection.js";
 import { rotateSelection90 } from "./rotateScale.js";
+import { removeWiresForNodes } from "../canvas/wireStore.js";
 
 export { isClipboardEmpty };
 
@@ -90,16 +91,22 @@ export function deleteSelection() {
   const ids = getSelectedIds();
   if (ids.length === 0) return;
   const saved = captureFullNodes(ids);
+  const savedWires = structuredClone(projectState.wires);
+  removeWiresForNodes(ids);
   removeNodes(ids);
   selectMany([]);
   push({
     undo: () => {
       insertNodes(saved);
+      projectState.wires = structuredClone(savedWires);
       selectMany(ids);
+      notify();
     },
     redo: () => {
+      removeWiresForNodes(ids);
       removeNodes(ids);
       selectMany([]);
+      notify();
     },
   });
 }

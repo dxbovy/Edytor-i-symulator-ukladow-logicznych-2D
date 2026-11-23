@@ -21,6 +21,7 @@ import {
   initSelectionHandles,
   isSelectionHandleTarget,
 } from "./handles.js";
+import { initWireTool } from "./wireTool.js";
 
 export function initInteraction() {
   const root = document.getElementById("canvas-root");
@@ -69,6 +70,7 @@ export function initInteraction() {
   };
 
   initSelectionHandles();
+  initWireTool();
 
   root.addEventListener("pointerdown", (event) => {
     if (isSelectionHandleTarget(event.target)) return;

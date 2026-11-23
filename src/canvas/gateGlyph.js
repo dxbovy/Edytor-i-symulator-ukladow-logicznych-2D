@@ -4,7 +4,6 @@ import { drawOr } from "./glyphs/orGlyph.js";
 import { drawNot } from "./glyphs/notGlyph.js";
 import { drawXor } from "./glyphs/xorGlyph.js";
 import { drawDff } from "./glyphs/dffGlyph.js";
-import { drawInput } from "./glyphs/inputGlyph.js";
 import { drawLed } from "./glyphs/ledGlyph.js";
 import { drawUnknown } from "./glyphs/unknownGlyph.js";
 
@@ -14,7 +13,6 @@ const DRAW = {
   NOT: drawNot,
   XOR: drawXor,
   DFF: drawDff,
-  INPUT: drawInput,
   LED: drawLed,
 };
 

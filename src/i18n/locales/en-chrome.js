@@ -35,6 +35,7 @@ export const enChrome = {
   libraryTitle: "Add component",
   addSwitch: "Switch",
   addLed: "LED",
+  addOutput: "Output",
   addComponentAria: "Add {type}",
   filterPlaceholder: "Filter by name or type",
   filterAria: "Filter object list",

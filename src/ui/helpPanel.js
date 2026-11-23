@@ -13,7 +13,7 @@ const SHORTCUTS = [
 export function mountHelpPanel(bar) {
   const btn = document.createElement("button");
   btn.type = "button";
-  btn.className = "ui-btn ui-help-btn";
+  btn.className = "ui-btn ui-help-btn ui-icon-btn";
   btn.textContent = "?";
   btn.id = "help-toggle-btn";
   btn.setAttribute("data-i18n-aria", "helpAria");

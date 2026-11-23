@@ -16,6 +16,7 @@ const PIN_DEFAULTS = {
   DFF: { inputStates: { in_D: null, in_CLK: null }, outputStates: { out_Q: null } },
   INPUT: { inputStates: {}, outputStates: { out: 0 } },
   LED: { inputStates: { in_A: null }, outputStates: {} },
+  OUTPUT: { inputStates: { in: null }, outputStates: {} },
 };
 
 function overlaps(x, y, w, h) {
@@ -95,4 +96,5 @@ export const PLACEABLE_TYPES = [
   "DFF",
   "INPUT",
   "LED",
+  "OUTPUT",
 ];
