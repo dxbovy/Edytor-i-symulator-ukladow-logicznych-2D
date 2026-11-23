@@ -44,10 +44,11 @@ function layoutNodeLabel(el, node, w, h) {
   const vy = (h / 2) * s;
   const rx = vx * cos - vy * sin;
   const ry = vx * sin + vy * cos;
-  const ax = w / 2 + rx;
-  const ay = h / 2 + ry;
+  const margin = 10;
+  const ax = w / 2 + rx + sin * margin;
+  const ay = h / 2 + ry + cos * margin;
   label.style.left = `${ax}px`;
-  label.style.top = `${ay + 5}px`;
+  label.style.top = `${ay}px`;
   label.textContent = NODE_LABELS[node.type] ?? node.type;
 }
 
@@ -61,15 +62,17 @@ function styleNodeEl(el, id, node) {
   if (rotator) {
     rotator.style.transformOrigin = "center center";
     rotator.style.transform = `rotate(${node.rotation}deg) scale(${node.scale})`;
+    if (isSelected(id)) {
+      rotator.style.outline = SELECTED_OUTLINE;
+      rotator.style.outlineOffset = "1px";
+    } else {
+      rotator.style.outline = "";
+      rotator.style.outlineOffset = "";
+    }
   }
+  el.style.outline = "";
+  el.style.outlineOffset = "";
   layoutNodeLabel(el, node, w, h);
-  if (isSelected(id)) {
-    el.style.outline = SELECTED_OUTLINE;
-    el.style.outlineOffset = "1px";
-  } else {
-    el.style.outline = "";
-    el.style.outlineOffset = "";
-  }
 }
 
 /** @param {HTMLElement} rotator */

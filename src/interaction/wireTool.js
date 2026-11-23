@@ -68,23 +68,6 @@ function applyWireSnap(snap) {
   return id;
 }
 
-/** @param {{ fromNode: string, fromPin: string, toNode: string, toPin: string }} snap */
-function pushWireHistory(snap) {
-  let createdId = "";
-  push({
-    undo: () => {
-      const hit = findWireAtInput(snap.toNode, snap.toPin);
-      if (hit) delete projectState.wires[hit.id];
-      syncWireInputs();
-      notify();
-    },
-    redo: () => {
-      createdId = applyWireSnap(snap);
-      notify();
-    },
-  });
-}
-
 export function initWireTool() {
   const root = document.getElementById("canvas-root");
   if (!root) return;
@@ -166,6 +149,7 @@ export function initWireTool() {
 
     if (canConnect) {
       const existing = findWireAtInput(target.nodeId, target.pin);
+      const displaced = existing ? wireSnapshot(existing.wire) : null;
       if (existing) delete projectState.wires[existing.id];
 
       const snap = {
@@ -175,25 +159,29 @@ export function initWireTool() {
         toPin: target.pin,
       };
       applyWireSnap(snap);
-      if (pulled) {
-        const prev = pulled.snap;
-        push({
-          undo: () => {
-            const cur = findWireAtInput(snap.toNode, snap.toPin);
-            if (cur) delete projectState.wires[cur.id];
-            applyWireSnap(prev);
-            notify();
-          },
-          redo: () => {
+      const prev = pulled?.snap ?? null;
+      push({
+        undo: () => {
+          const cur = findWireAtInput(snap.toNode, snap.toPin);
+          if (cur) delete projectState.wires[cur.id];
+          if (displaced) applyWireSnap(displaced);
+          if (prev) applyWireSnap(prev);
+          syncWireInputs();
+          notify();
+        },
+        redo: () => {
+          if (prev) {
             const atPrev = findWireAtInput(prev.toNode, prev.toPin);
             if (atPrev) delete projectState.wires[atPrev.id];
-            applyWireSnap(snap);
-            notify();
-          },
-        });
-      } else {
-        pushWireHistory(snap);
-      }
+          }
+          if (displaced) {
+            const atDisp = findWireAtInput(displaced.toNode, displaced.toPin);
+            if (atDisp) delete projectState.wires[atDisp.id];
+          }
+          applyWireSnap(snap);
+          notify();
+        },
+      });
       notify();
       return;
     }
