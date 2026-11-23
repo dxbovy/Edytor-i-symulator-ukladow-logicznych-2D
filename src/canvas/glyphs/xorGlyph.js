@@ -1,6 +1,6 @@
 import { el, filledPath, hookIn, hookOut, SW } from "./glyphSvg.js";
 
-const LEFT = 16;
+const LEFT_IN = 24.4;
 const OUT_X = 76;
 
 /** @param {SVGElement} svg */
@@ -20,7 +20,7 @@ export function drawXor(svg) {
       "M 16 10 Q 36 30 16 50 Q 46 50 76 30 Q 46 10 16 10 Z"
     )
   );
-  hookIn(svg, LEFT, 22);
-  hookIn(svg, LEFT, 38);
+  hookIn(svg, LEFT_IN, 22);
+  hookIn(svg, LEFT_IN, 38);
   hookOut(svg, OUT_X, 30);
 }

@@ -11,8 +11,8 @@ const WIDGET_RIGHT = WIDGET_INSET_X + WIDGET_BOX;
 /** @type {Record<string, Record<string, { x: number, y: number }>>} */
 const PIN_LOCAL = {
   AND: { in_A: { x: 18, y: 22 }, in_B: { x: 18, y: 38 }, out_Q: { x: 60, y: 30 } },
-  OR: { in_A: { x: 14, y: 22 }, in_B: { x: 14, y: 38 }, out_Q: { x: 74, y: 30 } },
-  XOR: { in_A: { x: 16, y: 22 }, in_B: { x: 16, y: 38 }, out_Q: { x: 76, y: 30 } },
+  OR: { in_A: { x: 22.4, y: 22 }, in_B: { x: 22.4, y: 38 }, out_Q: { x: 74, y: 30 } },
+  XOR: { in_A: { x: 24.4, y: 22 }, in_B: { x: 24.4, y: 38 }, out_Q: { x: 76, y: 30 } },
   NOT: { in_A: { x: 8, y: 26 }, out_Q: { x: 49, y: 26 } },
   DFF: { in_D: { x: 22, y: 22 }, in_CLK: { x: 22, y: 38 }, out_Q: { x: 74, y: 30 } },
   LED: { in_A: { x: 14, y: 26 } },
