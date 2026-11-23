@@ -47,6 +47,19 @@ export function subscribe(fn) {
   return () => listeners.delete(fn);
 }
 
+/** @type {(() => void) | null} */
+let preNotifyHook = null;
+
+/**
+ * Funkcja uruchamiana przed każdym powiadomieniem subskrybentów
+ * (żeby renderować po symulacji).
+ * @param {(() => void) | null} fn
+ */
+export function setPreNotifyHook(fn) {
+	preNotifyHook = fn;
+}
+
 export function notify() {
+  preNotifyHook();
   for (const fn of listeners) fn();
 }
