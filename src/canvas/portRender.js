@@ -2,8 +2,7 @@ import { projectState, subscribe } from "../state/projectState.js";
 import { findWireAtInput } from "./wireStore.js";
 import {
   CHEVRON_HALF,
-  getPinApproachDir,
-  getPinOutwardDir,
+  getPinFaceOutward,
   getPinWorldPosition,
   openChevronPaths,
   solidInputTrianglePoints,
@@ -38,8 +37,8 @@ function inputConnected(nodeId, pin) {
 /** @type {SVGSVGElement | null} */
 let layer = null;
 
-function drawOpenChevron(apex, approachDir, stroke) {
-  const { top, bot } = openChevronPaths(apex, approachDir);
+function drawOpenChevron(apex, faceOut, stroke) {
+  const { top, bot } = openChevronPaths(apex, faceOut);
   return el("path", {
     d: `M ${top.x} ${top.y} L ${apex.x} ${apex.y} L ${bot.x} ${bot.y}`,
     fill: "none",
@@ -50,15 +49,14 @@ function drawOpenChevron(apex, approachDir, stroke) {
   });
 }
 
-function drawSolidInput(apex, approachDir, fill) {
-  const pts = solidInputTrianglePoints(apex, approachDir);
+function drawSolidInput(apex, faceOut, fill) {
+  const pts = solidInputTrianglePoints(apex, faceOut);
   const d = pts.map((p, i) => `${i === 0 ? "M" : "L"} ${p.x} ${p.y}`).join(" ") + " Z";
   return el("path", { d, fill, stroke: fill, "stroke-width": "1" });
 }
 
-function drawOutChevron(apex, outDir, stroke) {
-  const inward = { x: -outDir.x, y: -outDir.y };
-  return drawOpenChevron(apex, inward, stroke);
+function drawOutChevron(apex, faceOut, stroke) {
+  return drawOpenChevron(apex, faceOut, stroke);
 }
 
 function renderPorts() {
@@ -68,23 +66,23 @@ function renderPorts() {
     for (const pin of Object.keys(node.inputStates)) {
       if (!IN_PINS.has(pin)) continue;
       const apex = getPinWorldPosition(nodeId, pin);
-      const approachDir = getPinApproachDir(nodeId, pin);
+      const faceOut = getPinFaceOutward(nodeId, pin);
       const hover =
         hoveredInput?.nodeId === nodeId && hoveredInput?.pin === pin;
       const stroke = hover ? HOVER : STROKE;
       if (inputConnected(nodeId, pin)) {
         layer.appendChild(
-          drawSolidInput(apex, approachDir, hover ? HOVER : "var(--node-stroke)")
+          drawSolidInput(apex, faceOut, hover ? HOVER : "var(--node-stroke)")
         );
       } else {
-        layer.appendChild(drawOpenChevron(apex, approachDir, stroke));
+        layer.appendChild(drawOpenChevron(apex, faceOut, stroke));
       }
     }
     for (const pin of Object.keys(node.outputStates)) {
       if (!OUT_PINS.has(pin)) continue;
       const apex = getPinWorldPosition(nodeId, pin);
-      const outDir = getPinOutwardDir(nodeId, pin);
-      layer.appendChild(drawOutChevron(apex, outDir, STROKE));
+      const faceOut = getPinFaceOutward(nodeId, pin);
+      layer.appendChild(drawOutChevron(apex, faceOut, STROKE));
     }
   }
 }
