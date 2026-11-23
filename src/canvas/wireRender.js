@@ -1,6 +1,11 @@
 import { projectState, subscribe } from "../state/projectState.js";
 import { getPinWorldPosition } from "./pinPositions.js";
-import { manhattanWirePath } from "./pinGeometry.js";
+import {
+  getPinFaceOutward,
+  manhattanWirePath,
+  outputChevronTip,
+  WIRE_STUB,
+} from "./pinGeometry.js";
 
 const NS = "http://www.w3.org/2000/svg";
 const WIRE_STROKE = "#000000";
@@ -22,15 +27,28 @@ function el(tag, attrs) {
 /** @type {SVGSVGElement | null} */
 let layer = null;
 
+function previewPathLoose(fromNode, fromPin, tx, ty) {
+  const apex = getPinWorldPosition(fromNode, fromPin);
+  const face = getPinFaceOutward(fromNode, fromPin);
+  const tip = outputChevronTip(apex, face);
+  const stub = {
+    x: tip.x + face.x * WIRE_STUB,
+    y: tip.y + face.y * WIRE_STUB,
+  };
+  const horizontal = Math.abs(face.x) >= Math.abs(face.y);
+  if (horizontal) {
+    return `M ${tip.x} ${tip.y} L ${stub.x} ${stub.y} L ${stub.x} ${ty} L ${tx} ${ty}`;
+  }
+  return `M ${tip.x} ${tip.y} L ${stub.x} ${stub.y} L ${tx} ${stub.y} L ${tx} ${ty}`;
+}
+
 function previewPath(fromNode, fromPin, tx, ty, toNode, toPin) {
   if (toNode && toPin) {
     const a = getPinWorldPosition(fromNode, fromPin);
     const b = getPinWorldPosition(toNode, toPin);
     return manhattanWirePath(a, fromPin, b, toPin, fromNode, toNode);
   }
-  const a = getPinWorldPosition(fromNode, fromPin);
-  const fake = { x: tx, y: ty };
-  return `M ${a.x} ${a.y} L ${tx} ${ty}`;
+  return previewPathLoose(fromNode, fromPin, tx, ty);
 }
 
 function renderWires() {

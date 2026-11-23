@@ -1,5 +1,5 @@
 import { projectState } from "../state/projectState.js";
-import { getPinLocalPosition } from "./pinPositions.js";
+import { getPinLocalPosition, getPinWorldPosition } from "./pinPositions.js";
 import { nodeSizeFor } from "./nodeSizes.js";
 
 export const HOOK = 7;
@@ -63,8 +63,22 @@ export function wireAttachFromApproach(apex, faceOut) {
   return wireAttachAtPort(apex, faceOut);
 }
 
+/** Czubek chevrona wyjścia — stąd wychodzi przewód. */
+export function outputChevronTip(apex, faceOut) {
+  return {
+    x: apex.x + faceOut.x * HOOK,
+    y: apex.y + faceOut.y * HOOK,
+  };
+}
+
+export function getOutputChevronTipWorld(nodeId, pinName) {
+  const apex = getPinWorldPosition(nodeId, pinName);
+  const face = getPinFaceOutward(nodeId, pinName);
+  return outputChevronTip(apex, face);
+}
+
 export function wireAttachFromOutput(apex, faceOut) {
-  return wireAttachAtPort(apex, faceOut);
+  return outputChevronTip(apex, faceOut);
 }
 
 /** @param {{ x: number, y: number }} a @param {{ x: number, y: number }} b */
@@ -90,10 +104,10 @@ export function manhattanWirePath(
 ) {
   const outFace = getPinFaceOutward(fromNodeId, fromPin);
   const inFace = getPinFaceOutward(toNodeId, toPin);
-  const aExit = wireAttachAtPort(fromApex, outFace);
+  const outTip = outputChevronTip(fromApex, outFace);
   const aStub = {
-    x: aExit.x + outFace.x * WIRE_STUB,
-    y: aExit.y + outFace.y * WIRE_STUB,
+    x: outTip.x + outFace.x * WIRE_STUB,
+    y: outTip.y + outFace.y * WIRE_STUB,
   };
   const bAttach = wireAttachAtPort(toApex, inFace);
   const bStub = {
@@ -102,7 +116,7 @@ export function manhattanWirePath(
   };
   const bend = orthBetweenStubs(aStub, bStub, outFace, inFace);
   return (
-    `M ${aExit.x} ${aExit.y} L ${aStub.x} ${aStub.y} ` +
+    `M ${outTip.x} ${outTip.y} L ${aStub.x} ${aStub.y} ` +
     `L ${bend.x} ${bend.y} L ${bStub.x} ${bStub.y} ` +
     `L ${bAttach.x} ${bAttach.y}`
   );
@@ -121,8 +135,17 @@ export function openChevronPaths(apex, faceOut) {
   return { top, apex, bot };
 }
 
+/** Wyjście: podstawa na konturze, czubek na zewnątrz (">" od bloczka). */
 export function openOutputChevronPaths(apex, faceOut) {
-  return openChevronPaths(apex, faceOut);
+  const px = -faceOut.y;
+  const py = faceOut.x;
+  const tip = {
+    x: apex.x + faceOut.x * HOOK,
+    y: apex.y + faceOut.y * HOOK,
+  };
+  const top = { x: apex.x + px * CHEVRON_HALF, y: apex.y + py * CHEVRON_HALF };
+  const bot = { x: apex.x - px * CHEVRON_HALF, y: apex.y - py * CHEVRON_HALF };
+  return { top, tip, bot };
 }
 
 export function solidInputTrianglePoints(apex, faceOut) {

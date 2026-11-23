@@ -5,6 +5,7 @@ import {
   getPinFaceOutward,
   getPinWorldPosition,
   openChevronPaths,
+  openOutputChevronPaths,
   solidInputTrianglePoints,
 } from "./pinGeometry.js";
 
@@ -56,7 +57,15 @@ function drawSolidInput(apex, faceOut, fill) {
 }
 
 function drawOutChevron(apex, faceOut, stroke) {
-  return drawOpenChevron(apex, faceOut, stroke);
+  const { top, tip, bot } = openOutputChevronPaths(apex, faceOut);
+  return el("path", {
+    d: `M ${top.x} ${top.y} L ${tip.x} ${tip.y} L ${bot.x} ${bot.y}`,
+    fill: "none",
+    stroke,
+    "stroke-width": "2",
+    "stroke-linecap": "round",
+    "stroke-linejoin": "miter",
+  });
 }
 
 function renderPorts() {
