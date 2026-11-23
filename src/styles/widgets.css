@@ -101,3 +101,7 @@
   right: 0;
   transform: translate(100%, 0);
 }
+
+[data-gate-glyph][data-node-type="LED"][data-powered="1"] .gate-glyph-svg > path:first-of-type {
+  fill: var(--led-on);
+}

@@ -16,6 +16,9 @@
   --node-bg: #ffffff;
   --node-stroke: #000000;
   --focus-ring: #2563eb;
+  --wire-on: #16a34a;
+  --wire-unknown: #9ca3af;
+  --led-on: #22c55e;
 }
 
 [data-theme="dark"] {
@@ -32,6 +35,9 @@
   --node-bg: #3d424b;
   --node-stroke: #f3f4f6;
   --focus-ring: #93c5fd;
+  --wire-on: #4ade80;
+  --wire-unknown: #6b7280;
+  --led-on: #4ade80;
 }
 
 [data-theme="high-contrast"] {
@@ -48,6 +54,9 @@
   --node-bg: #000000;
   --node-stroke: #ffffff;
   --focus-ring: #ffe600;
+  --wire-on: #00ff66;
+  --wire-unknown: #808080;
+  --led-on: #00ff66;
 }
 
 @layer base {

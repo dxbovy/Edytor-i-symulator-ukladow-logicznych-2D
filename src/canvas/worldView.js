@@ -89,6 +89,9 @@ function setGlyph(rotator, id, node) {
     slot.className = "h-full w-full overflow-visible";
     rotator.appendChild(slot);
   }
+  if (type === "LED") {
+    slot.dataset.powered = node.inputStates.in_A === 1 ? "1" : "0";
+  }
   const ver = "ports5";
   if (slot.dataset.nodeType === type && slot.dataset.glyphVer === ver) return;
   slot.dataset.nodeType = type;
