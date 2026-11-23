@@ -2,6 +2,8 @@ import { projectState, subscribe } from "../state/projectState.js";
 import { getPinWorldPosition } from "./pinPositions.js";
 
 const NS = "http://www.w3.org/2000/svg";
+const WIRE_STROKE = "#000000";
+
 /** @type {{ fromNode: string, fromPin: string, x: number, y: number } | null} */
 let dragPreview = null;
 
@@ -10,15 +12,12 @@ export function setWireDragPreview(preview) {
   renderWires();
 }
 
-function wireStroke(state) {
-  if (state === 1) return "#16a34a";
-  if (state === 0) return "#dc2626";
-  return "#1e293b";
-}
-
-function orthPath(x1, y1, x2, y2) {
-  const midX = (x1 + x2) / 2;
-  return `M ${x1} ${y1} H ${midX} V ${y2} H ${x2}`;
+/** Krzywa typu Blueprint / Simulink — czarna linia. */
+function splinePath(x1, y1, x2, y2) {
+  const dx = Math.max(48, Math.abs(x2 - x1) * 0.45);
+  const c1x = x1 + dx;
+  const c2x = x2 - dx;
+  return `M ${x1} ${y1} C ${c1x} ${y1}, ${c2x} ${y2}, ${x2} ${y2}`;
 }
 
 function el(tag, attrs) {
@@ -44,12 +43,11 @@ function renderWires() {
     const b = getPinWorldPosition(wire.toNode, wire.toPin);
     layer.appendChild(
       el("path", {
-        d: orthPath(a.x, a.y, b.x, b.y),
+        d: splinePath(a.x, a.y, b.x, b.y),
         fill: "none",
-        stroke: wireStroke(wire.state),
+        stroke: WIRE_STROKE,
         "stroke-width": "2",
         "stroke-linecap": "round",
-        "stroke-linejoin": "round",
       })
     );
   }
@@ -58,28 +56,15 @@ function renderWires() {
     const b = { x: dragPreview.x, y: dragPreview.y };
     layer.appendChild(
       el("path", {
-        d: orthPath(a.x, a.y, b.x, b.y),
+        d: splinePath(a.x, a.y, b.x, b.y),
         fill: "none",
-        stroke: "#1e293b",
+        stroke: WIRE_STROKE,
         "stroke-width": "2",
-        "stroke-dasharray": "4 3",
+        "stroke-dasharray": "5 4",
         "stroke-linecap": "round",
+        opacity: "0.75",
       })
     );
-    for (const [nodeId, node] of Object.entries(projectState.nodes)) {
-      for (const pin of Object.keys(node.inputStates)) {
-        const p = getPinWorldPosition(nodeId, pin);
-        layer.appendChild(
-          el("circle", {
-            cx: String(p.x),
-            cy: String(p.y),
-            r: "3",
-            fill: "#2dd4bf",
-            opacity: "0.45",
-          })
-        );
-      }
-    }
   }
 }
 

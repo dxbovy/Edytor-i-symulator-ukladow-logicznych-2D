@@ -1,4 +1,4 @@
-import { el, FILL, STROKE, SW, symbolLabel, wire } from "./glyphSvg.js";
+import { el, FILL, hookIn, hookOut, STROKE, SW, symbolLabel } from "./glyphSvg.js";
 
 const BODY_LEFT = 22;
 const CLK_Y = 38;
@@ -17,8 +17,8 @@ export function drawDff(svg) {
     "stroke-width": String(SW),
   });
   svg.appendChild(body);
-  wire(svg, 0, 22, BODY_LEFT, 22);
-  wire(svg, 0, CLK_Y, BODY_LEFT, CLK_Y);
+  hookIn(svg, 0, 22);
+  hookIn(svg, 0, CLK_Y);
   const dPin = el("text", {
     x: "26",
     y: "20",
@@ -30,7 +30,7 @@ export function drawDff(svg) {
   });
   dPin.textContent = "D";
   svg.appendChild(dPin);
-  wire(svg, 74, 30, 90, 30);
+  hookOut(svg, 74, 30);
   svg.appendChild(
     el("path", {
       d: `M ${BODY_LEFT} 34 L 30 ${CLK_Y} L ${BODY_LEFT} 42 Z`,

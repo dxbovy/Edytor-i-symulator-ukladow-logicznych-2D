@@ -1,4 +1,4 @@
-import { el, filledPath, FILL, STROKE, SW, symbolLabel, wire } from "./glyphSvg.js";
+import { el, filledPath, FILL, hookIn, hookOut, STROKE, SW, symbolLabel } from "./glyphSvg.js";
 
 const TIP_X = 40;
 const TIP_Y = 26;
@@ -9,7 +9,7 @@ const BUBBLE_OUT_X = BUBBLE_CX + BUBBLE_R;
 /** @param {SVGElement} svg */
 export function drawNot(svg) {
   svg.setAttribute("viewBox", "0 0 72 58");
-  wire(svg, 0, TIP_Y, 8, TIP_Y);
+  hookIn(svg, 0, TIP_Y);
   svg.appendChild(filledPath(`M 8 10 L 8 42 L ${TIP_X} ${TIP_Y} Z`));
   svg.appendChild(
     el("circle", {
@@ -21,6 +21,6 @@ export function drawNot(svg) {
       "stroke-width": String(SW),
     })
   );
-  wire(svg, BUBBLE_OUT_X, TIP_Y, 68, TIP_Y);
+  hookOut(svg, BUBBLE_OUT_X, TIP_Y);
   symbolLabel(svg, "NOT", 36, 46);
 }

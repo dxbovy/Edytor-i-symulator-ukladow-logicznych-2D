@@ -1,9 +1,20 @@
 .input-switch-box {
   position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 56px;
   height: 56px;
-  border: 2px solid #334155;
-  border-radius: 4px;
+  border: 2px solid #000;
+  border-radius: 2px;
+  background: #e8eaed;
+  box-shadow: 1px 2px 3px rgb(0 0 0 / 12%);
+  transition:
+    background 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.input-switch-box[data-powered="1"] {
   background: #f5c542;
   box-shadow: 0 2px 4px rgb(15 23 42 / 18%);
 }
@@ -23,22 +34,23 @@
 }
 
 .input-switch-toggle {
-  position: absolute;
-  inset: 0;
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0;
-  padding: 0;
+  padding: 2px;
   border: 0;
   background: transparent;
   cursor: pointer;
+  z-index: 1;
 }
 
 .input-switch-track {
   position: relative;
   display: flex;
   align-items: center;
+  justify-content: flex-start;
   width: 44px;
   height: 20px;
   border-radius: 9999px;
@@ -47,7 +59,12 @@
   transition: background 0.15s ease;
 }
 
+.input-switch-track[data-on="0"] {
+  justify-content: flex-end;
+}
+
 .input-switch-track[data-on="1"] {
+  justify-content: flex-start;
   background: #2dd4bf;
 }
 
@@ -72,30 +89,21 @@
   transition: transform 0.15s ease;
 }
 
-.input-switch-pin,
-.output-switch-pin {
+.pin-hook {
   position: absolute;
   top: 50%;
-  width: 10px;
-  height: 10px;
+  display: block;
   margin-top: -5px;
-  border-radius: 50%;
-  border: 2px solid #9ca3af;
-  background: #f5c542;
+  width: 8px;
+  height: 10px;
+  line-height: 0;
   pointer-events: none;
 }
 
-.input-switch-pin {
-  right: -5px;
-  border-color: #9ca3af;
+.pin-hook--in {
+  left: -2px;
 }
 
-.input-switch-pin[data-signal="1"] {
-  border-color: #2dd4bf;
-}
-
-.output-switch-pin {
-  left: -5px;
-  border-color: #2dd4bf;
-  background: #2dd4bf;
+.pin-hook--out {
+  right: -2px;
 }

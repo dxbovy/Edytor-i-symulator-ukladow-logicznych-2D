@@ -19,6 +19,7 @@ export function removeWiresForNodes(nodeIds) {
   for (const [id, w] of Object.entries(projectState.wires)) {
     if (drop.has(w.fromNode) || drop.has(w.toNode)) delete projectState.wires[id];
   }
+  syncWireInputs();
 }
 
 /** @param {string} nodeId */
@@ -29,5 +30,18 @@ export function syncWiresFromNode(nodeId) {
     if (wire.fromNode !== nodeId) continue;
     const v = node.outputStates[wire.fromPin];
     wire.state = v === 0 || v === 1 ? v : null;
+  }
+  syncWireInputs();
+}
+
+/** Kopiuje stan kabli na wejścia docelowych węzłów (OUTPUT, LED, …). */
+export function syncWireInputs() {
+  for (const [nodeId, node] of Object.entries(projectState.nodes)) {
+    for (const pin of Object.keys(node.inputStates)) {
+      const wire = Object.values(projectState.wires).find(
+        (w) => w.toNode === nodeId && w.toPin === pin
+      );
+      node.inputStates[pin] = wire ? wire.state : null;
+    }
   }
 }

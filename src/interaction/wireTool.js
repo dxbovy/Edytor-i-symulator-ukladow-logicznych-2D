@@ -4,7 +4,7 @@ import { isViewPan } from "../canvas/cameraInput.js";
 import { push } from "../history/history.js";
 import { getPinWorldPosition } from "../canvas/pinPositions.js";
 import { setWireDragPreview } from "../canvas/wireRender.js";
-import { wireOutputState } from "../canvas/wireStore.js";
+import { syncWireInputs, wireOutputState } from "../canvas/wireStore.js";
 
 const HIT_R = 12;
 const OUT_PINS = new Set(["out", "out_Q"]);
@@ -127,9 +127,11 @@ export function initWireTool() {
       toNode: wire.toNode,
       toPin: wire.toPin,
     };
+    syncWireInputs();
     push({
       undo: () => {
         delete projectState.wires[id];
+        syncWireInputs();
         notify();
       },
       redo: () => {
@@ -137,6 +139,7 @@ export function initWireTool() {
           ...structuredClone(snap),
           state: wireOutputState(snap.fromNode, snap.fromPin),
         };
+        syncWireInputs();
         notify();
       },
     });

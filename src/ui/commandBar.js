@@ -1,38 +1,40 @@
 import { fitToNodes, zoomBy } from "../canvas/camera.js";
 import { mountEditToolbar } from "./editToolbar.js";
 import { mountHelpPanel } from "./helpPanel.js";
+import { iconSvg } from "./toolbarIcons.js";
 
 const BTN_CLASS = "ui-btn";
+const ICON_BTN_CLASS = "ui-btn ui-icon-btn";
 
-function langBtn(icon, ariaKey, localeId) {
+function langBtn(labelKey, ariaKey, localeId) {
   const b = document.createElement("button");
   b.type = "button";
-  b.textContent = icon;
   b.dataset.localeToggle = localeId;
-  b.setAttribute("data-i18n-aria", ariaKey);
-  b.setAttribute("data-i18n-title", ariaKey);
-  b.className = "ui-btn ui-icon-btn";
-  return b;
-}
-
-function themeBtn(icon, ariaKey, themeId) {
-  const b = document.createElement("button");
-  b.type = "button";
-  b.textContent = icon;
-  b.dataset.themeToggle = themeId;
-  b.setAttribute("data-i18n-aria", ariaKey);
-  b.setAttribute("data-i18n-title", ariaKey);
-  b.className = "ui-btn ui-theme-btn ui-icon-btn";
-  return b;
-}
-
-function viewBtn(labelKey, ariaKey, titleKey, onClick) {
-  const b = document.createElement("button");
-  b.type = "button";
   b.setAttribute("data-i18n", labelKey);
   b.setAttribute("data-i18n-aria", ariaKey);
-  b.setAttribute("data-i18n-title", titleKey);
+  b.setAttribute("data-i18n-title", ariaKey);
   b.className = BTN_CLASS;
+  return b;
+}
+
+function themeBtn(labelKey, ariaKey, themeId) {
+  const b = document.createElement("button");
+  b.type = "button";
+  b.dataset.themeToggle = themeId;
+  b.setAttribute("data-i18n", labelKey);
+  b.setAttribute("data-i18n-aria", ariaKey);
+  b.setAttribute("data-i18n-title", ariaKey);
+  b.className = "ui-btn ui-theme-btn";
+  return b;
+}
+
+function viewIconBtn(iconName, ariaKey, titleKey, onClick) {
+  const b = document.createElement("button");
+  b.type = "button";
+  b.innerHTML = iconSvg(iconName);
+  b.setAttribute("data-i18n-aria", ariaKey);
+  b.setAttribute("data-i18n-title", titleKey);
+  b.className = ICON_BTN_CLASS;
   b.addEventListener("click", onClick);
   return b;
 }
@@ -64,15 +66,15 @@ export function mountCommandBar(container) {
   viewGroup.setAttribute("role", "group");
   viewGroup.setAttribute("data-i18n-aria", "groupView");
   viewGroup.append(
-    viewBtn("fit", "fitView", "fitView", () => {
+    viewIconBtn("fit", "fitView", "fitView", () => {
       const { w, h } = canvasCenter();
       fitToNodes(w, h);
     }),
-    viewBtn("zoomIn", "zoomInAria", "zoomInAria", () => {
+    viewIconBtn("zoomIn", "zoomInAria", "zoomInAria", () => {
       const { x, y } = canvasCenter();
       zoomBy(x, y, 1.1);
     }),
-    viewBtn("zoomOut", "zoomOutAria", "zoomOutAria", () => {
+    viewIconBtn("zoomOut", "zoomOutAria", "zoomOutAria", () => {
       const { x, y } = canvasCenter();
       zoomBy(x, y, 1 / 1.1);
     })
@@ -83,9 +85,9 @@ export function mountCommandBar(container) {
   themeGroup.setAttribute("role", "group");
   themeGroup.setAttribute("data-i18n-aria", "groupTheme");
   themeGroup.append(
-    themeBtn("☀", "themeLightAria", "light"),
-    themeBtn("☽", "themeDarkAria", "dark"),
-    themeBtn("◐", "themeHighContrastAria", "high-contrast")
+    themeBtn("themeLight", "themeLightAria", "light"),
+    themeBtn("themeDark", "themeDarkAria", "dark"),
+    themeBtn("themeHighContrast", "themeHighContrastAria", "high-contrast")
   );
 
   const langGroup = document.createElement("div");
@@ -93,8 +95,8 @@ export function mountCommandBar(container) {
   langGroup.setAttribute("role", "group");
   langGroup.setAttribute("data-i18n-aria", "groupLanguage");
   langGroup.append(
-    langBtn("🇵🇱", "langPlAria", "pl"),
-    langBtn("🇬🇧", "langEnAria", "en")
+    langBtn("langPl", "langPlAria", "pl"),
+    langBtn("langEn", "langEnAria", "en")
   );
 
   const helpBtn = mountHelpPanel(bar);

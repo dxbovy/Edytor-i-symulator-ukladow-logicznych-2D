@@ -9,14 +9,17 @@ import {
 import { getSelectionCount, subscribeSelection } from "../interaction/selection.js";
 import { subscribeClipboard } from "../clipboard/clipboard.js";
 import { registerLocaleRefresh, t } from "../i18n/i18n.js";
+import { iconSvg } from "./toolbarIcons.js";
 
-const BTN_CLASS = "ui-btn disabled:cursor-not-allowed disabled:opacity-50";
+const BTN_CLASS = "ui-btn ui-icon-btn disabled:cursor-not-allowed disabled:opacity-50";
 
-function cmdBtn(labelKey) {
+/** @param {string} iconName @param {string} labelKey */
+function cmdIconBtn(iconName, labelKey) {
   const b = document.createElement("button");
   b.type = "button";
-  b.setAttribute("data-i18n", labelKey);
+  b.innerHTML = iconSvg(iconName);
   b.setAttribute("data-i18n-aria", labelKey);
+  b.setAttribute("data-i18n-title", labelKey);
   b.className = BTN_CLASS;
   return b;
 }
@@ -28,12 +31,12 @@ export function mountEditToolbar() {
   editGroup.setAttribute("role", "group");
   editGroup.setAttribute("data-i18n-aria", "groupEdit");
 
-  const undoBtn = cmdBtn("undo");
-  const redoBtn = cmdBtn("redo");
-  const copyBtn = cmdBtn("copy");
-  const pasteBtn = cmdBtn("paste");
-  const delBtn = cmdBtn("delete");
-  const rotateBtn = cmdBtn("rotateLabel");
+  const undoBtn = cmdIconBtn("undo", "undo");
+  const redoBtn = cmdIconBtn("redo", "redo");
+  const copyBtn = cmdIconBtn("copy", "copy");
+  const pasteBtn = cmdIconBtn("paste", "paste");
+  const delBtn = cmdIconBtn("delete", "delete");
+  const rotateBtn = cmdIconBtn("rotate", "rotateLabel");
   rotateBtn.id = "rotate-90-btn";
   rotateBtn.setAttribute("data-i18n-aria", "rotateSelectionAria");
 

@@ -3,7 +3,7 @@ import { t } from "../i18n/i18n.js";
 
 /** @param {string} type */
 function libraryLabel(type) {
-  if (type === "INPUT") return t("addSwitch");
+  if (type === "INPUT") return t("addInput");
   if (type === "LED") return t("addLed");
   if (type === "OUTPUT") return t("addOutput");
   return type;

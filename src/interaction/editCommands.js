@@ -16,7 +16,7 @@ import {
 } from "../clipboard/clipboard.js";
 import { getSelectedIds, selectMany } from "./selection.js";
 import { rotateSelection90 } from "./rotateScale.js";
-import { removeWiresForNodes } from "../canvas/wireStore.js";
+import { removeWiresForNodes, syncWireInputs } from "../canvas/wireStore.js";
 
 export { isClipboardEmpty };
 
@@ -99,6 +99,7 @@ export function deleteSelection() {
     undo: () => {
       insertNodes(saved);
       projectState.wires = structuredClone(savedWires);
+      syncWireInputs();
       selectMany(ids);
       notify();
     },

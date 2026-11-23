@@ -8,11 +8,11 @@ const WIDGET_MID_Y = WIDGET_INSET_Y + WIDGET_BOX / 2;
 
 /** @type {Record<string, Record<string, { x: number, y: number }>>} */
 const PIN_LOCAL = {
-  AND: { in_A: { x: 0, y: 22 }, in_B: { x: 0, y: 38 }, out_Q: { x: 84, y: 30 } },
-  OR: { in_A: { x: 0, y: 22 }, in_B: { x: 0, y: 38 }, out_Q: { x: 84, y: 30 } },
-  XOR: { in_A: { x: 0, y: 22 }, in_B: { x: 0, y: 38 }, out_Q: { x: 84, y: 30 } },
-  NOT: { in_A: { x: 0, y: 26 }, out_Q: { x: 68, y: 26 } },
-  DFF: { in_D: { x: 0, y: 22 }, in_CLK: { x: 0, y: 38 }, out_Q: { x: 90, y: 30 } },
+  AND: { in_A: { x: 0, y: 22 }, in_B: { x: 0, y: 38 }, out_Q: { x: 60, y: 30 } },
+  OR: { in_A: { x: 0, y: 22 }, in_B: { x: 0, y: 38 }, out_Q: { x: 74, y: 30 } },
+  XOR: { in_A: { x: 0, y: 22 }, in_B: { x: 0, y: 38 }, out_Q: { x: 76, y: 30 } },
+  NOT: { in_A: { x: 0, y: 26 }, out_Q: { x: 49, y: 26 } },
+  DFF: { in_D: { x: 0, y: 22 }, in_CLK: { x: 0, y: 38 }, out_Q: { x: 74, y: 30 } },
   LED: { in_A: { x: 0, y: 26 } },
   INPUT: { out: { x: WIDGET_INSET_X + WIDGET_BOX, y: WIDGET_MID_Y } },
   OUTPUT: { in: { x: WIDGET_INSET_X, y: WIDGET_MID_Y } },

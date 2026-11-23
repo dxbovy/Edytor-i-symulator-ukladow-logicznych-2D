@@ -6,12 +6,11 @@ function paintToggle(box, on) {
   const track = box.querySelector("[data-input-track]");
   const knob = box.querySelector("[data-input-knob]");
   const label = box.querySelector("[data-input-label]");
-  const pin = box.querySelector("[data-pin-out]");
   if (!track || !knob || !label) return;
   track.dataset.on = on ? "1" : "0";
   label.textContent = on ? "ON" : "OFF";
   knob.style.transform = on ? "translateX(22px)" : "translateX(0)";
-  if (pin) pin.dataset.signal = on ? "1" : "0";
+  box.dataset.powered = on ? "1" : "0";
 }
 
 /**
@@ -33,7 +32,9 @@ export function createInputWidget(el, node, id) {
             <span class="input-switch-knob" data-input-knob></span>
           </span>
         </button>
-        <span class="input-switch-pin" data-pin-out data-signal="0" aria-hidden="true"></span>
+        <span class="pin-hook pin-hook--out" data-pin-out aria-hidden="true">
+          <svg width="8" height="10" viewBox="0 0 8 10" aria-hidden="true"><path d="M0 0 L8 5 L0 10" fill="none" stroke="#000" stroke-width="2" stroke-linejoin="round"/></svg>
+        </span>
       </div>`;
     el.replaceChildren(slot);
     const toggle = slot.querySelector("[data-input-toggle]");

@@ -1,5 +1,5 @@
-export const FILL = "#88BC93";
-export const STROKE = "#1a4f86";
+export const FILL = "#ffffff";
+export const STROKE = "#000000";
 export const SW = 2;
 
 /** @param {string} name @param {Record<string, string>} attrs */
@@ -17,6 +17,7 @@ export function createSvgRoot() {
     "pointer-events": "none",
   });
   svg.style.display = "block";
+  svg.style.filter = "drop-shadow(1px 2px 2px rgb(0 0 0 / 12%))";
   return svg;
 }
 
@@ -38,18 +39,32 @@ export function symbolLabel(root, text, cx, y, size = 11) {
   root.appendChild(t);
 }
 
+/** Wejście na lewej krawędzi (hak Simulink / MATLAB). */
 /** @param {SVGElement} root */
-export function wire(root, x1, y1, x2, y2) {
+export function hookIn(root, x, y) {
   root.appendChild(
-    el("line", {
-      x1: String(x1),
-      y1: String(y1),
-      x2: String(x2),
-      y2: String(y2),
+    el("path", {
+      d: `M ${x} ${y - 5} L ${x + 8} ${y} L ${x} ${y + 5}`,
+      fill: "none",
       stroke: STROKE,
       "stroke-width": String(SW),
+      "stroke-linejoin": "round",
       "stroke-linecap": "round",
+    })
+  );
+}
+
+/** Wyjście na prawej krawędzi. */
+/** @param {SVGElement} root */
+export function hookOut(root, x, y) {
+  root.appendChild(
+    el("path", {
+      d: `M ${x - 8} ${y - 5} L ${x} ${y} L ${x - 8} ${y + 5}`,
       fill: "none",
+      stroke: STROKE,
+      "stroke-width": String(SW),
+      "stroke-linejoin": "round",
+      "stroke-linecap": "round",
     })
   );
 }
